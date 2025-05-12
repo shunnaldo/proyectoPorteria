@@ -1,0 +1,116 @@
+        :root {
+            --primary-color: #6366f1;  /* Color principal (índigo) */
+            --secondary-color: #f8fafc;  /* Color de fondo */
+            --text-color: #334155;  /* Color de texto */
+            --text-active: #6366f1;  /* Color de texto activo */
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: #f1f5f9;
+            padding-bottom: 80px; /* Espacio para el bottom nav */
+        }
+
+        /* Barra de navegación inferior */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            background-color: white;
+            border-top: 1px solid #e2e8f0;
+            padding: 12px 0;
+            z-index: 1000;
+            box-shadow: var(--shadow);
+        }
+
+        .tab {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: var(--text-color);
+            font-size: 0.75rem;
+            font-weight: 500;
+            padding: 8px 12px;
+            border-radius: 12px;
+            transition: var(--transition);
+            position: relative;
+            opacity: 0.8;
+        }
+
+        .tab:hover {
+            opacity: 1;
+        }
+
+        .tab.active {
+            opacity: 1;
+            color: var(--text-active);
+        }
+
+        .tab .bi {
+            font-size: 1.4rem;
+            margin-bottom: 4px;
+            transition: var(--transition);
+        }
+
+        .tab.active .bi {
+            transform: translateY(-4px);
+        }
+
+        /* Efecto de burbuja para el ítem activo */
+        .tab.active::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            width: 40px;
+            height: 4px;
+            background-color: var(--primary-color);
+            border-radius: 4px 4px 0 0;
+        }
+
+        /* Versión para pantallas más grandes */
+        @media (min-width: 768px) {
+            .bottom-nav {
+                left: 50%;
+                transform: translateX(-50%);
+                width: 400px;
+                border-radius: 16px 16px 0 0;
+                border-top: none;
+                margin-bottom: 16px;
+                bottom: 16px;
+                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            }
+
+            .tab {
+                font-size: 0.85rem;
+                padding: 8px 16px;
+            }
+
+            .tab .bi {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Animación suave al hacer hover */
+        @media (hover: hover) {
+            .tab:hover {
+                background-color: #f8fafc;
+            }
+            
+            .tab:hover .bi {
+                transform: scale(1.1);
+            }
+        }
