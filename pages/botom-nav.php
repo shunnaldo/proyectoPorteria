@@ -10,19 +10,14 @@
 </head>
 <body>
     
-<!-- Contenido de la página -->
-    <div style="height: 200vh; padding: 20px;">
-        <h1>Contenido de la página</h1>
-        <p>Desplázate hacia abajo para ver el bottom nav en acción</p>
-    </div>
 
     <!-- Bottom Navigation -->
     <nav class="bottom-nav">
-        <a href="inicio.php" class="tab active">
+        <a href="portero_portones.php" class="tab active">
             <i class="bi bi-house-door"></i>
-            <span class="text">Inicio</span>
+            <span class="text">Portones</span>
         </a>
-        <a href="registro.php" class="tab">
+        <a href="escanearQR.php" class="tab">
             <i class="bi bi-person-plus"></i>
             <span class="text">Registrar</span>
         </a>
@@ -30,9 +25,9 @@
             <i class="bi bi-file-earmark-text"></i>
             <span class="text">Visitas</span>
         </a>
-        <a href="perfil.php" class="tab">
+        <a href="../php/logout.php" class="tab">
             <i class="bi bi-person-circle"></i>
-            <span class="text">Perfil</span>
+            <span class="text">Cerrar sesion</span>
         </a>
     </nav>
 

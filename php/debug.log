@@ -1,0 +1,17 @@
+Datos recibidos:
+Array
+(
+    [rut] => 13284139
+    [dv] => K
+    [nombre] => Adriana
+    [apellido] => Molina
+    [genero] => Femenino
+    [fecha_ingreso] => 2025-05-13
+    [hora_ingreso] => 16:59:02
+    [usuario_id] => 5
+    [porton_id] => 
+    [direccion] => oaaaaaaaaaaaa
+    [medio_transporte] => Auto
+    [patente] => aaaaaaaaaaaaaaaa
+)
+

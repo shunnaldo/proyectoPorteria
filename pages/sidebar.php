@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -78,6 +80,13 @@
                 <i class="fas fa-bell"></i>
                 <span class="menu-text">Notificaciones</span>
             </a>
+
+            <a href="../php/logout.php" class="menu-item">
+                <i class="fas fa-sign-out-alt"></i>
+                <span class="menu-text">Cerrar sesión</span>
+            </a>
+
+
 
         </div>
         

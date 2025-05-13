@@ -1,5 +1,11 @@
 <?php
 require_once '../php/obtener_usuario.php';
+
+session_start();
+if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "admin") {
+    header("Location: ../pages/logintrabajador.php");
+    exit;
+}
 ?>
 
 <!DOCTYPE html>

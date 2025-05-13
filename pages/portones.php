@@ -209,7 +209,6 @@ if ($resultado && $resultado->num_rows > 0) {
                 <table>
                     <thead>
                         <tr>
-                            <th>ID</th>
                             <th>Nombre</th>
                             <th>Ubicación</th>
                             <th>Estado</th>
@@ -219,7 +218,7 @@ if ($resultado && $resultado->num_rows > 0) {
                     <tbody>
                         <?php foreach ($portones as $porton): ?>
                             <tr>
-                                <td><?= $porton['id'] ?></td>
+
                                 <td><?= htmlspecialchars($porton['nombre']) ?></td>
                                 <td><?= htmlspecialchars($porton['ubicacion']) ?></td>
                                 <td>

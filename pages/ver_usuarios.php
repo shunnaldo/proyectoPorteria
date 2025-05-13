@@ -1,6 +1,12 @@
 <?php
 require_once '../php/conexion.php';
 
+session_start();
+if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "admin") {
+    header("Location: ../pages/logintrabajador.php");
+    exit;
+}
+
 $sql = "SELECT id, nombre, correo_electronico, rol FROM usuarios";
 $resultado = $conexion->query($sql);
 
@@ -12,6 +18,7 @@ if ($resultado && $resultado->num_rows > 0) {
     }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="es">

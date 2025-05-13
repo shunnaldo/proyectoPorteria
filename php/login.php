@@ -25,8 +25,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 "rol" => $usuario["rol"]
             ];
 
-            echo "Bienvenido, " . $usuario["nombre"] . ". Redirigiendo...";
-            // Aquí podrías redirigir: header("Location: user_data.php"); exit;
+            // Redirigir según el rol
+            if ($usuario["rol"] === "admin") {
+                header("Location: ../pages/sidebar.php");
+                exit;
+            } elseif ($usuario["rol"] === "portero") {
+                header("Location: ../pages/botom-nav.php");
+                exit;
+            } else {
+                echo "Rol no reconocido. Contacta al administrador.";
+            }
+
         } else {
             echo "Contraseña incorrecta.";
         }

@@ -1,0 +1,239 @@
+/* Variables de color - Colores más suaves y modernos */
+:root {
+    --primary-color: #4a89dc;
+    --secondary-color: #3a3f51;
+    --success-color: #48cfad;
+    --danger-color: #ed5565;
+    --warning-color: #ffce54;
+    --light-color: #f5f7fa;
+    --dark-color: #434a54;
+    --toolbar-bg: #3a3f51;
+    --toolbar-text: #e6e9ed;
+    --card-bg: #ffffff;
+    --text-muted: #aab2bd;
+}
+
+/* Reset y estilos base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: var(--light-color);
+    color: var(--dark-color);
+    line-height: 1.6;
+}
+
+/* Toolbar Superior */
+.app-toolbar {
+    background-color: var(--toolbar-bg);
+    color: var(--toolbar-text);
+    padding: 12px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.avatar {
+    width: 42px;
+    height: 42px;
+    background-color: var(--primary-color);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: white;
+}
+
+.user-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.username {
+    font-weight: 600;
+    font-size: 15px;
+}
+
+.user-role {
+    font-size: 13px;
+    color: rgba(230, 233, 237, 0.8);
+}
+
+/* Contenido principal */
+.main-content {
+    padding: 24px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.porton-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+}
+
+.porton-header h1 {
+    color: var(--secondary-color);
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-grow: 1;
+    font-weight: 600;
+}
+
+.back-btn {
+    color: var(--primary-color);
+    font-size: 20px;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(74, 137, 220, 0.1);
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.back-btn:hover {
+    background-color: rgba(74, 137, 220, 0.2);
+    transform: translateX(-2px);
+}
+
+.status-indicator {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-left: auto;
+    letter-spacing: 0.5px;
+}
+
+.status-indicator.open {
+    background-color: rgba(72, 207, 173, 0.15);
+    color: #1a7d62;
+}
+
+.status-indicator.closed {
+    background-color: rgba(237, 85, 101, 0.15);
+    color: #c13a4a;
+}
+
+/* Tarjeta de portón */
+.porton-card {
+    background-color: var(--card-bg);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    padding: 24px;
+    margin-bottom: 24px;
+    border: 1px solid rgba(0, 0, 0, 0.03);
+}
+
+.porton-info h2 {
+    color: var(--secondary-color);
+    margin-bottom: 12px;
+    font-size: 22px;
+    font-weight: 600;
+}
+
+.porton-info p {
+    color: var(--text-muted);
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+
+
+/* Responsive - Mejoras para móvil */
+@media (max-width: 600px) {
+    .main-content {
+        padding: 18px;
+    }
+    
+    .porton-header {
+        gap: 12px;
+        margin-bottom: 22px;
+    }
+    
+    .porton-header h1 {
+        font-size: 20px;
+        order: 2;
+        width: 100%;
+        justify-content: center;
+        margin-top: 8px;
+    }
+    
+    .back-btn {
+        order: 1;
+    }
+    
+    .status-indicator {
+        order: 3;
+        margin-left: 0;
+    }
+    
+    .porton-card {
+        padding: 20px;
+    }
+    
+    .porton-info h2 {
+        font-size: 20px;
+        text-align: center;
+    }
+    
+    .porton-info p {
+        text-align: center;
+    }
+    
+    /* Mostrar siempre los detalles del usuario en móvil */
+    .user-details {
+        display: flex !important;
+    }
+}
+
+@media (max-width: 400px) {
+    .app-toolbar {
+        padding: 12px 15px;
+    }
+    
+    .avatar {
+        width: 38px;
+        height: 38px;
+        font-size: 16px;
+    }
+    
+    .username {
+        font-size: 14px;
+    }
+    
+    .user-role {
+        font-size: 12px;
+    }
+    
+    .porton-header h1 {
+        font-size: 18px;
+    }
+    
+    .porton-info h2 {
+        font-size: 18px;
+    }
+}

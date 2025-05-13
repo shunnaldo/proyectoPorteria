@@ -1,3 +1,10 @@
+<?php
+session_start();
+if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "admin") {
+    header("Location: ../pages/logintrabajador.php");
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
