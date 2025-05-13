@@ -17,12 +17,14 @@
         body {
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             background-color: #f1f5f9;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
             color: var(--text-color);
+        }
+
+        .main-content {
+            margin-left: 280px; /* Ajuste para el sidebar */
+            padding: 20px;
+            min-height: 100vh;
+            transition: var(--transition);
         }
 
         .register-container {
@@ -31,6 +33,7 @@
             box-shadow: var(--shadow);
             width: 100%;
             max-width: 480px;
+            margin: 0 auto;
             overflow: hidden;
             transition: var(--transition);
         }
@@ -73,28 +76,13 @@
             position: relative;
         }
 
-        .input-field i {
+        .input-field i.left-icon {
             position: absolute;
             left: 14px;
             top: 50%;
             transform: translateY(-50%);
             color: #94a3b8;
             font-size: 1.1rem;
-        }
-
-        .input-field .right-icon {
-            position: absolute;
-            right: 14px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #94a3b8;
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .input-field .right-icon:hover {
-            color: var(--primary-color);
         }
 
         .form-control {
@@ -107,8 +95,29 @@
             background-color: var(--light-gray);
         }
 
-        .form-control.password-field {
-            padding-right: 42px;
+        .password-container {
+            position: relative;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #94a3b8;
+            font-size: 1.1rem;
+            z-index: 2;
+        }
+
+        .password-toggle:hover {
+            color: var(--primary-color);
+        }
+
+        .password-field {
+            padding-right: 42px !important;
         }
 
         .form-control:focus {
@@ -157,27 +166,39 @@
             transform: translateY(0);
         }
 
-        .login-link {
-            margin-top: 24px;
-            text-align: center;
-            font-size: 0.9rem;
-        }
-
-        .login-link a {
-            color: var(--primary-color);
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-        .login-link a:hover {
-            text-decoration: underline;
-        }
-
         /* Efecto de carga al enviar el formulario */
         .btn.loading {
             position: relative;
             color: transparent;
         }
+
+        .alerta {
+            margin: 20px auto;
+            max-width: 600px;
+            }
+
+            .mensaje {
+            padding: 15px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            }
+
+            .mensaje.exito {
+            background-color: #d1fae5;
+            color: #065f46;
+            border-left: 5px solid #10b981;
+            }
+
+            .mensaje.error {
+            background-color: #fee2e2;
+            color: #991b1b;
+            border-left: 5px solid #ef4444;
+            }
+
 
         .btn.loading::after {
             content: "";
@@ -200,7 +221,12 @@
         }
 
         /* Versión para pantallas pequeñas */
-        @media (max-width: 480px) {
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+                padding-top: 70px; /* Espacio para el header móvil */
+            }
+            
             .register-header {
                 padding: 24px 20px;
             }
