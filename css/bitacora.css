@@ -1,0 +1,170 @@
+:root {
+    --bit-primary-color: #3498db;
+    --bit-secondary-color: #2980b9;
+    --bit-text-color: #333;
+    --bit-light-gray: #f5f5f5;
+    --bit-white: #ffffff;
+    --bit-border-color: #e0e0e0;
+    --bit-card-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.bit-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.bit-title {
+    color: var(--bit-primary-color);
+    text-align: center;
+    margin: 20px 0;
+    font-size: 1.8rem;
+}
+
+/* Estilos para la tabla en desktop */
+.bit-table-container {
+    overflow-x: auto;
+    background-color: var(--bit-white);
+    border-radius: 8px;
+    box-shadow: var(--bit-card-shadow);
+    margin-bottom: 20px;
+}
+
+.bit-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 600px;
+}
+
+.bit-table thead {
+    background-color: var(--bit-primary-color);
+    color: var(--bit-white);
+}
+
+.bit-table th, 
+.bit-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid var(--bit-border-color);
+}
+
+.bit-table th {
+    position: sticky;
+    top: 0;
+    font-weight: 600;
+}
+
+.bit-table tbody tr:hover {
+    background-color: rgba(52, 152, 219, 0.1);
+}
+
+.bit-table tbody tr:nth-child(even) {
+    background-color: var(--bit-light-gray);
+}
+
+/* Estilos para las tarjetas en móvil */
+.bit-card-container {
+    display: none;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.bit-card {
+    background-color: var(--bit-white);
+    border-radius: 8px;
+    box-shadow: var(--bit-card-shadow);
+    overflow: hidden;
+}
+
+.bit-card-header {
+    background-color: var(--bit-primary-color);
+    color: var(--bit-white);
+    padding: 12px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+}
+
+.bit-card-header h3 {
+    margin: 0;
+    font-size: 1rem;
+}
+
+.bit-arrow {
+    transition: transform 0.3s ease;
+}
+
+.bit-card-header.bit-active .bit-arrow {
+    transform: rotate(180deg);
+}
+
+.bit-card-content {
+    padding: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease, padding 0.3s ease;
+}
+
+.bit-card-content.bit-active {
+    padding: 15px;
+    max-height: 500px;
+}
+
+.bit-card-row {
+    display: flex;
+    margin-bottom: 8px;
+}
+
+.bit-card-label {
+    font-weight: bold;
+    min-width: 100px;
+    color: var(--bit-secondary-color);
+}
+
+.bit-card-value {
+    flex: 1;
+}
+
+/* Estados y mensajes */
+.bit-loading, 
+.bit-error {
+    text-align: center;
+    padding: 20px;
+}
+
+.bit-loading {
+    font-style: italic;
+    color: #666;
+}
+
+.bit-error {
+    color: #e74c3c;
+    font-weight: bold;
+}
+
+/* Media queries para responsive */
+@media (max-width: 768px) {
+    .bit-table-container {
+        display: none;
+    }
+    
+    .bit-card-container {
+        display: flex;
+    }
+    
+    .bit-title {
+        font-size: 1.5rem;
+    }
+}
+
+@media (min-width: 769px) {
+    .bit-card-container {
+        display: none !important;
+    }
+    
+    .bit-table-container {
+        display: block !important;
+    }
+}

@@ -1,4 +1,12 @@
+<?php
+// Obtener el nombre de la página actual
+$current_page = basename($_SERVER['PHP_SELF']);
 
+// Función para verificar si el enlace está activo
+function isActive($page, $current) {
+    return $page === $current ? 'active' : '';
+}
+?>
 
 <!DOCTYPE html>
 <html lang="es">
@@ -10,7 +18,6 @@
     <link rel="stylesheet" href="../css/sidebard.css">
 </head>
 <body>
-
 
     <!-- Mobile Header -->
     <header class="mobile-header">
@@ -32,51 +39,50 @@
         
         <div class="sidebar-menu">
             <div class="menu-title">Principal</div>
-            <a href="#" class="menu-item active">
+            <a href="dashboard.php" class="menu-item <?php echo isActive('dashboard.php', $current_page); ?>">
                 <i class="fas fa-home"></i>
                 <span class="menu-text">Dashboard</span>
             </a>
             
             <div class="menu-title">Gestión</div>
-            <div class="menu-item has-dropdown" id="usersMenu">
+            <div class="menu-item has-dropdown <?php echo (in_array($current_page, ['ver_usuarios.php', 'registrotrabajador.php']) ? 'active' : ''); ?>" id="usersMenu">
                 <i class="fas fa-users"></i>
                 <span class="menu-text">Usuarios</span>
             </div>
             <div class="menu-dropdown" id="usersDropdown">
-                <a href="ver_usuarios.php" class="menu-item">
+                <a href="ver_usuarios.php" class="menu-item <?php echo isActive('ver_usuarios.php', $current_page); ?>">
                     <i class="fas fa-circle-notch"></i>
                     <span class="menu-text">Todos los usuarios</span>
                 </a>
-                <a href="registrotrabajador.php" class="menu-item">
+                <a href="registrotrabajador.php" class="menu-item <?php echo isActive('registrotrabajador.php', $current_page); ?>">
                     <i class="fas fa-user-plus"></i>
                     <span class="menu-text">Agregar nuevo</span>
                 </a>
-
             </div>
             
-            <a href="crear_porton.php" class="menu-item">
+            <a href="crear_porton.php" class="menu-item <?php echo isActive('crear_porton.php', $current_page); ?>">
                 <i class="fas fa-building"></i>
                 <span class="menu-text">Portones</span>
             </a>
             
-            <a href="asignar_portero.php" class="menu-item">
+            <a href="asignar_portero.php" class="menu-item <?php echo isActive('asignar_portero.php', $current_page); ?>">
                 <i class="fas fa-user-tie"></i>
                 <span class="menu-text">Porteros</span>
             </a>
             
-            <a href="#" class="menu-item">
+            <a href="bitacoraAdmin.php" class="menu-item <?php echo isActive('bitacoraAdmin.php', $current_page); ?>">
                 <i class="fas fa-clipboard-list"></i>
                 <span class="menu-text">Registros</span>
             </a>
             
             <div class="menu-title">Configuración</div>
 
-            <a href="#" class="menu-item">
+            <a href="ajustes.php" class="menu-item <?php echo isActive('ajustes.php', $current_page); ?>">
                 <i class="fas fa-cog"></i>
                 <span class="menu-text">Ajustes</span>
             </a>
             
-            <a href="#" class="menu-item">
+            <a href="notificaciones.php" class="menu-item <?php echo isActive('notificaciones.php', $current_page); ?>">
                 <i class="fas fa-bell"></i>
                 <span class="menu-text">Notificaciones</span>
             </a>
@@ -85,9 +91,6 @@
                 <i class="fas fa-sign-out-alt"></i>
                 <span class="menu-text">Cerrar sesión</span>
             </a>
-
-
-
         </div>
         
         <div class="sidebar-footer">
@@ -101,7 +104,6 @@
         </div>
     </aside>
 
-
- <script src="../js/sidebaropen.js"></script>  
+    <script src="../js/sidebaropen.js"></script>  
 </body>
 </html>

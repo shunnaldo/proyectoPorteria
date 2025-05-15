@@ -4,9 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bitácora de Ingresos</title>
-    <link rel="stylesheet" href="../css/bitacora.css">
+    <link rel="stylesheet" href="../css/bitacoraAdmin.css">
 </head>
 <body>
+    <?php include 'sidebar.php'; ?>
+
+
     <div class="bit-container">
         <h1 class="bit-title">Bitácora de Ingresos</h1>
         
@@ -37,7 +40,6 @@
         </div>
     </div>
 
-    <?php include 'botom-nav.php'; ?>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -147,5 +149,7 @@
             cardHeader.classList.toggle('bit-active');
         }
     </script>
+        <script src="../js/sidebaropen.js"></script>
+
 </body>
 </html>

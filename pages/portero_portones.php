@@ -61,7 +61,7 @@ $conexion->close();
                                     <?= ucfirst($porton['estado']) ?>
                                 </span>
                             </div>
-                            <a href="escanearQR.php?porton_id=<?= $porton['id'] ?>" class="btn-entrar">Entrar al portón</a>
+                            <a href="escanearQR.php?porton_id=<?= $porton['id'] ?>" class="btn-entrar">Registra entrada</a>
                         </div>
                     <?php endforeach; ?>
                 </div>

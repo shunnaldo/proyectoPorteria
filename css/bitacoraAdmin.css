@@ -1,0 +1,305 @@
+/* bitacoraAdmin.css - Diseño Premium */
+
+:root {
+    --primary-color: #6366f1;
+    --primary-dark: #4f46e5;
+    --primary-light: #a5b4fc;
+    --text-color: #334155;
+    --text-light: #64748b;
+    --light-gray: #f8fafc;
+    --border-color: #e2e8f0;
+    --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --radius: 12px;
+    --gradient: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+}
+
+/* Estilos generales */
+.bit-container {
+    margin-left: 250px;
+    padding: 2.5rem;
+    transition: var(--transition);
+    background-color: #f1f5f9;
+    min-height: 100vh;
+}
+
+/* Título premium */
+.bit-title {
+    position: relative;
+    color: var(--text-color);
+    margin-bottom: 2.5rem;
+    font-size: 2.5rem;
+    font-weight: 700;
+    display: inline-block;
+    padding-bottom: 0.5rem;
+}
+
+.bit-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 60px;
+    height: 4px;
+    background: var(--gradient);
+    border-radius: 2px;
+}
+
+/* Tabla estilo premium */
+.bit-table-container {
+    width: 100%;
+    overflow-x: auto;
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow-lg);
+    border-radius: var(--radius);
+    background: white;
+    position: relative;
+    z-index: 1;
+}
+
+.bit-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background-color: white;
+    border-radius: var(--radius);
+    overflow: hidden;
+}
+
+.bit-table thead {
+    background: var(--gradient);
+    color: white;
+    position: sticky;
+    top: 0;
+}
+
+.bit-table th {
+    padding: 1.25rem 1.5rem;
+    text-align: left;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+}
+
+.bit-table th:first-child {
+    border-top-left-radius: var(--radius);
+}
+
+.bit-table th:last-child {
+    border-top-right-radius: var(--radius);
+}
+
+.bit-table td {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-color);
+    font-weight: 400;
+    transition: var(--transition);
+}
+
+.bit-table tr:last-child td {
+    border-bottom: none;
+}
+
+.bit-table tr:hover td {
+    background-color: rgba(99, 102, 241, 0.05);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.1);
+}
+
+.bit-table tr:not(:last-child) td {
+    border-bottom: 1px solid rgba(226, 232, 240, 0.5);
+}
+
+/* Cards premium */
+.bit-card-container {
+    display: none;
+    flex-direction: column;
+    gap: 1.25rem;
+    padding: 0.5rem;
+}
+
+.bit-card {
+    background-color: white;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    transition: var(--transition);
+    position: relative;
+}
+
+.bit-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+}
+
+.bit-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--gradient);
+}
+
+.bit-card-header {
+    padding: 1.5rem;
+    color: var(--text-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: var(--transition);
+    position: relative;
+}
+
+.bit-card-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.bit-card-header h3::before {
+    content: '';
+    display: block;
+    width: 8px;
+    height: 8px;
+    background: var(--primary-color);
+    border-radius: 50%;
+}
+
+.bit-card-header .bit-arrow {
+    transition: var(--transition);
+    font-size: 1.2rem;
+    color: var(--primary-color);
+}
+
+.bit-card-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: var(--transition);
+    padding: 0 1.5rem;
+}
+
+.bit-card-content.bit-active {
+    max-height: 1000px;
+    padding: 0 1.5rem 1.5rem;
+}
+
+.bit-card-row {
+    display: flex;
+    margin-bottom: 1rem;
+    align-items: flex-start;
+}
+
+.bit-card-label {
+    font-weight: 600;
+    color: var(--text-color);
+    min-width: 100px;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--text-light);
+}
+
+.bit-card-value {
+    color: var(--text-color);
+    flex-grow: 1;
+    font-weight: 500;
+}
+
+/* Estados y utilidades */
+.bit-loading, .bit-error {
+    text-align: center;
+    padding: 3rem;
+    color: var(--text-color);
+    font-size: 1.1rem;
+}
+
+.bit-error {
+    color: #ef4444;
+    background: rgba(239, 68, 68, 0.05);
+    border-radius: var(--radius);
+}
+
+/* Animación de carga premium */
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.bit-loading::after {
+    content: "";
+    display: inline-block;
+    width: 1.5rem;
+    height: 1.5rem;
+    border: 3px solid var(--primary-light);
+    border-top: 3px solid var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite, pulse 2s ease-in-out infinite;
+    margin-left: 0.75rem;
+    vertical-align: middle;
+}
+
+/* Responsive design */
+@media (max-width: 1024px) {
+    .bit-container {
+        padding: 1.5rem;
+    }
+    
+    .bit-title {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .bit-container {
+        margin-left: 0;
+        padding: 1.25rem;
+    }
+    
+    .bit-title {
+        font-size: 1.75rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .bit-title::after {
+        width: 40px;
+        height: 3px;
+    }
+    
+    .bit-table-container {
+        display: none;
+    }
+    
+    .bit-card-container {
+        display: flex;
+    }
+}
+
+/* Efecto de aparición suave */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.bit-table tbody tr,
+.bit-card {
+    animation: fadeIn 0.5s ease-out forwards;
+    opacity: 0;
+}
+
+.bit-table tbody tr:nth-child(1) { animation-delay: 0.1s; }
+.bit-table tbody tr:nth-child(2) { animation-delay: 0.2s; }
+.bit-table tbody tr:nth-child(3) { animation-delay: 0.3s; }
+.bit-table tbody tr:nth-child(4) { animation-delay: 0.4s; }
+.bit-card:nth-child(1) { animation-delay: 0.1s; }
+.bit-card:nth-child(2) { animation-delay: 0.2s; }
+.bit-card:nth-child(3) { animation-delay: 0.3s; }
+.bit-card:nth-child(4) { animation-delay: 0.4s; }
