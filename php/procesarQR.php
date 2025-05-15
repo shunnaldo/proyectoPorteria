@@ -13,22 +13,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $rutCompleto = $params['RUN'] ?? '';
 
             if (!empty($rutCompleto)) {
-                $rut = (int) preg_replace('/[^0-9]/', '', $rutCompleto);
-                $dv = strtoupper(substr($rutCompleto, -1));
+                $rut = strtoupper(preg_replace('/[^0-9K]/', '', $rutCompleto));
 
                 // Buscar persona
-                $stmt = $conexion->prepare("SELECT * FROM personas WHERE rut = ? AND dv = ? ORDER BY id DESC LIMIT 1");
-                $stmt->bind_param("is", $rut, $dv);
+                $stmt = $conexion->prepare("SELECT * FROM personas WHERE rut = ? ORDER BY id DESC LIMIT 1");
+                $stmt->bind_param("s", $rut);
                 $stmt->execute();
                 $resultado = $stmt->get_result();
 
                 if ($resultado->num_rows > 0) {
-                    header("Location: ../pages/formularioIngreso.php?rut=$rut&dv=$dv");
-                    exit;
+                    header("Location: ../pages/formularioIngreso.php?rut=$rut");
                 } else {
-                    header("Location: ../pages/registro.php?rut=$rut&dv=$dv");
-                    exit;
+                    header("Location: ../pages/registro.php?rut=$rut");
                 }
+                exit;
             } else {
                 echo "⚠️ El QR no contiene un RUT válido.";
             }

@@ -3,10 +3,11 @@ require_once '../php/conexion.php';
 
 $rut = $_GET['rut'] ?? '';
 $dv = $_GET['dv'] ?? '';
-$fecha = date('Y-m-d');
-$hora = date('H:i:s');
 
-// Juntar RUT + DV
+// Ya no usamos fecha/hora en PHP porque lo haremos en JS
+// $fecha = date('Y-m-d');
+// $hora = date('H:i:s');
+
 $rut_completo = $rut . $dv;
 ?>
 
@@ -17,19 +18,19 @@ $rut_completo = $rut . $dv;
     <title>Registro de nueva persona</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        <link rel="stylesheet" href="../css/registro.css">
-
+    <link rel="stylesheet" href="../css/registro.css">
 </head>
 <body>
     <h2>Registro de nueva persona</h2>
 
     <form action="../php/guardarRegistro.php" method="POST" onsubmit="return validarFormulario();">
-        <input type="hidden" name="fecha_ingreso" value="<?= $fecha ?>">
-        <input type="hidden" name="hora_ingreso" value="<?= $hora ?>">
+        <!-- Inputs ocultos para fecha y hora, se llenan con JS -->
+        <input type="hidden" name="fecha_ingreso" id="fecha_ingreso" value="">
+        <input type="hidden" name="hora_ingreso" id="hora_ingreso" value="">
 
         <div class="form-group">
             <label for="rut">RUT</label>
-            <input type="text" id="rut" name="rut" value="<?= $rut_completo ?>" readonly>
+            <input type="text" id="rut" name="rut" value="<?= htmlspecialchars($rut_completo) ?>" readonly>
         </div>
 
         <div class="form-group">
@@ -66,7 +67,7 @@ $rut_completo = $rut . $dv;
             </select>
         </div>
 
-        <div id="campo_patente" class="hidden-field">
+        <div id="campo_patente" class="hidden-field" style="display:none;">
             <div class="form-group">
                 <label for="patente">Patente</label>
                 <input type="text" id="patente" name="patente" placeholder="Ej: AB1234">
@@ -81,12 +82,12 @@ $rut_completo = $rut . $dv;
         const medio = document.getElementById('medio_transporte').value;
         const patenteDiv = document.getElementById('campo_patente');
         const patenteInput = document.getElementById('patente');
-        
+
         if (medio === 'Auto') {
-            patenteDiv.classList.remove('hidden-field');
+            patenteDiv.style.display = 'block';
             patenteInput.setAttribute('required', '');
         } else {
-            patenteDiv.classList.add('hidden-field');
+            patenteDiv.style.display = 'none';
             patenteInput.removeAttribute('required');
         }
     }
@@ -94,14 +95,28 @@ $rut_completo = $rut . $dv;
     function validarFormulario() {
         const medio = document.getElementById('medio_transporte').value;
         const patente = document.getElementById('patente').value;
-        
+
         if (medio === 'Auto' && patente.trim() === '') {
             alert('Por favor ingrese la patente del vehículo');
             return false;
         }
-        
         return true;
     }
+
+    // Insertar fecha y hora del navegador justo antes de enviar el formulario
+    document.querySelector('form').addEventListener('submit', () => {
+        const now = new Date();
+
+        const yyyy = now.getFullYear();
+        const mm = String(now.getMonth() + 1).padStart(2, '0');
+        const dd = String(now.getDate()).padStart(2, '0');
+        document.getElementById('fecha_ingreso').value = `${yyyy}-${mm}-${dd}`;
+
+        const hh = String(now.getHours()).padStart(2, '0');
+        const min = String(now.getMinutes()).padStart(2, '0');
+        const ss = String(now.getSeconds()).padStart(2, '0');
+        document.getElementById('hora_ingreso').value = `${hh}:${min}:${ss}`;
+    });
     </script>
 </body>
 </html>

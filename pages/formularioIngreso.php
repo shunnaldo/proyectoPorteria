@@ -1,11 +1,12 @@
 <?php
 require_once '../php/conexion.php';
 
-$rut = $_GET['rut'] ?? '';
-$dv = $_GET['dv'] ?? '';
+// Limpiar y estandarizar RUT
+$rut = strtoupper(preg_replace('/[^0-9K]/', '', $_GET['rut'] ?? ''));
 
-$stmt = $conexion->prepare("SELECT * FROM personas WHERE rut = ? AND dv = ? ORDER BY id DESC LIMIT 1");
-$stmt->bind_param("is", $rut, $dv);
+// Buscar persona solo por el RUT completo
+$stmt = $conexion->prepare("SELECT * FROM personas WHERE rut = ? ORDER BY id DESC LIMIT 1");
+$stmt->bind_param("s", $rut);
 $stmt->execute();
 $resultado = $stmt->get_result();
 
@@ -15,8 +16,6 @@ if ($resultado->num_rows === 0) {
 }
 
 $persona = $resultado->fetch_assoc();
-$fecha = date('Y-m-d');
-$hora = date('H:i:s');
 ?>
 
 <!DOCTYPE html>
@@ -25,131 +24,20 @@ $hora = date('H:i:s');
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ingreso de persona registrada</title>
-    <style>
-        :root {
-            --text-color: #333;
-            --light-gray: #f5f5f5;
-            --border-color: #e0e0e0;
-            --primary-color: #2c7be5;
-            --success-color: #28a745;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            line-height: 1.6;
-            color: var(--text-color);
-            background-color: #f9f9f9;
-            padding: 20px;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        h2 {
-            font-weight: 400;
-            font-size: 1.5rem;
-            margin-bottom: 1.5rem;
-            text-align: center;
-            color: var(--text-color);
-        }
-
-        form {
-            background: white;
-            padding: 2rem;
-            border-radius: 6px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        }
-
-        .info-section {
-            background-color: var(--light-gray);
-            padding: 1rem;
-            border-radius: 4px;
-            margin-bottom: 1.5rem;
-        }
-
-        .info-item {
-            margin-bottom: 0.5rem;
-        }
-
-        .info-item strong {
-            font-weight: 500;
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-size: 0.9rem;
-            color: #666;
-        }
-
-        input, select {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            font-size: 1rem;
-        }
-
-        input:focus, select:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 2px rgba(44, 123, 229, 0.1);
-        }
-
-        button {
-            width: 100%;
-            padding: 0.75rem;
-            background-color: var(--success-color);
-            color: white;
-            border: none;
-            border-radius: 4px;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: background-color 0.2s ease;
-        }
-
-        button:hover {
-            background-color: #218838;
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        .error-message {
-            background-color: #f8d7da;
-            color: #721c24;
-            padding: 1rem;
-            border-radius: 4px;
-            text-align: center;
-            margin-bottom: 1.5rem;
-        }
-
-        @media (max-width: 480px) {
-            body {
-                padding: 10px;
-            }
-            
-            form {
-                padding: 1.5rem;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="../css/formulario.css">
 </head>
 <body>
     <h2>Ingreso de persona ya registrada</h2>
 
-    <form action="../php/guardarRegistro.php" method="POST">
-        <input type="hidden" name="rut" value="<?= $persona['rut'] ?>">
-        <input type="hidden" name="dv" value="<?= $persona['dv'] ?>">
+    <form action="../php/guardarRegistro.php" method="POST" id="ingresoForm">
+        <input type="hidden" name="rut" value="<?= htmlspecialchars($persona['rut']) ?>">
         <input type="hidden" name="nombre" value="<?= htmlspecialchars($persona['nombre']) ?>">
         <input type="hidden" name="apellido" value="<?= htmlspecialchars($persona['apellido']) ?>">
-        <input type="hidden" name="genero" value="<?= $persona['genero'] ?>">
-        <input type="hidden" name="fecha_ingreso" value="<?= $fecha ?>">
-        <input type="hidden" name="hora_ingreso" value="<?= $hora ?>">
+        <input type="hidden" name="genero" value="<?= htmlspecialchars($persona['genero']) ?>">
+
+        <!-- Fecha y hora vacíos que se llenan con JS -->
+        <input type="hidden" name="fecha_ingreso" id="fecha_ingreso" value="">
+        <input type="hidden" name="hora_ingreso" id="hora_ingreso" value="">
 
         <div class="info-section">
             <div class="info-item">
@@ -159,7 +47,7 @@ $hora = date('H:i:s');
                 <strong>Apellido:</strong> <?= htmlspecialchars($persona['apellido']) ?>
             </div>
             <div class="info-item">
-                <strong>Género:</strong> <?= $persona['genero'] ?>
+                <strong>Género:</strong> <?= htmlspecialchars($persona['genero']) ?>
             </div>
         </div>
 
@@ -177,7 +65,7 @@ $hora = date('H:i:s');
             </select>
         </div>
 
-        <div id="patente_field" class="hidden">
+        <div id="patente_field" class="hidden" style="display:none;">
             <div class="form-group">
                 <label for="patente">Patente</label>
                 <input type="text" id="patente" name="patente">
@@ -188,18 +76,33 @@ $hora = date('H:i:s');
     </form>
 
     <script>
-        document.getElementById('medio_transporte').addEventListener('change', function() {
-            const patenteField = document.getElementById('patente_field');
-            const patenteInput = document.getElementById('patente');
-            
-            if (this.value === 'Auto') {
-                patenteField.classList.remove('hidden');
-                patenteInput.setAttribute('required', '');
-            } else {
-                patenteField.classList.add('hidden');
-                patenteInput.removeAttribute('required');
-            }
-        });
+    document.getElementById('medio_transporte').addEventListener('change', function() {
+        const patenteField = document.getElementById('patente_field');
+        const patenteInput = document.getElementById('patente');
+
+        if (this.value === 'Auto') {
+            patenteField.style.display = 'block';
+            patenteInput.setAttribute('required', '');
+        } else {
+            patenteField.style.display = 'none';
+            patenteInput.removeAttribute('required');
+        }
+    });
+
+    // Capturar fecha y hora local antes de enviar
+    document.getElementById('ingresoForm').addEventListener('submit', () => {
+        const now = new Date();
+
+        const yyyy = now.getFullYear();
+        const mm = String(now.getMonth() + 1).padStart(2, '0');
+        const dd = String(now.getDate()).padStart(2, '0');
+        document.getElementById('fecha_ingreso').value = `${yyyy}-${mm}-${dd}`;
+
+        const hh = String(now.getHours()).padStart(2, '0');
+        const min = String(now.getMinutes()).padStart(2, '0');
+        const ss = String(now.getSeconds()).padStart(2, '0');
+        document.getElementById('hora_ingreso').value = `${hh}:${min}:${ss}`;
+    });
     </script>
 </body>
 </html>

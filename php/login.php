@@ -30,7 +30,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 header("Location: ../pages/sidebar.php");
                 exit;
             } elseif ($usuario["rol"] === "portero") {
-                header("Location: ../pages/botom-nav.php");
+                header("Location: ../pages/portero_portones.php");
                 exit;
             } else {
                 echo "Rol no reconocido. Contacta al administrador.";
