@@ -25,22 +25,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 "rol" => $usuario["rol"]
             ];
 
-            // Redirigir según el rol
+            // Devolver respuesta según el rol
             if ($usuario["rol"] === "admin") {
-                header("Location: ../pages/sidebar.php");
+                echo "success_admin";
                 exit;
             } elseif ($usuario["rol"] === "portero") {
-                header("Location: ../pages/portero_portones.php");
+                echo "success_portero";
                 exit;
             } else {
                 echo "Rol no reconocido. Contacta al administrador.";
+                exit;
             }
-
         } else {
             echo "Contraseña incorrecta.";
+            exit;
         }
     } else {
         echo "No se encontró un usuario con ese correo.";
+        exit;
     }
 
     $stmt->close();

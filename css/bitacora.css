@@ -8,6 +8,92 @@
     --bit-card-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
+/* Estilos para el filtro de fecha */
+.bit-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.bit-filter {
+    display: flex;
+    align-items: center;
+}
+
+.bit-filter-btn {
+    background: #4a6fa5;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.3s;
+}
+
+.bit-filter-btn:hover {
+    background: #3a5a8a;
+}
+
+.bit-date-input {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-left: 10px;
+    font-size: 14px;
+}
+
+/* Estilos para el calendario */
+.flatpickr-calendar {
+    font-family: inherit;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.flatpickr-day.selected {
+    background: #4a6fa5;
+    border-color: #4a6fa5;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .bit-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .bit-filter {
+        margin-top: 10px;
+        width: 100%;
+    }
+    
+    .bit-date-input {
+        flex-grow: 1;
+    }
+}
+
+/* Oculta el input visualmente sin romper Flatpickr */
+#date-filter {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+    height: 0;
+}
+
+/* Asegura que el calendario no se esconda debajo de nada */
+.flatpickr-calendar {
+    z-index: 9999 !important;
+    font-family: inherit;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.flatpickr-day.selected {
+    background: #4a6fa5;
+    border-color: #4a6fa5;
+}
+
+
 .bit-container {
     width: 100%;
     max-width: 1200px;

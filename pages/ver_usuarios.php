@@ -7,7 +7,7 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "admin") {
     exit;
 }
 
-$sql = "SELECT id, nombre, correo_electronico, rol FROM usuarios";
+$sql = "SELECT id, nombre, apellido, correo_electronico, rol FROM usuarios";
 $resultado = $conexion->query($sql);
 
 $usuarios = [];
@@ -19,7 +19,6 @@ if ($resultado && $resultado->num_rows > 0) {
 }
 ?>
 
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -27,7 +26,6 @@ if ($resultado && $resultado->num_rows > 0) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Usuarios Registrados</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="../css/sidebard.css">
   <link rel="stylesheet" href="../css/ver_usuarios.css">
 </head>
 <body>
@@ -37,51 +35,53 @@ if ($resultado && $resultado->num_rows > 0) {
   <!-- Contenido principal -->
   <main class="main-content">
     <div class="container">
-      <h2>Listado de Cuentas</h2>
+      <h1><i class="fas fa-users"></i> Listado de Usuarios</h1>
 
       <?php if (count($usuarios) > 0): ?>
-        <table>
-          <thead>
-            <tr>
-       
-              <th>Nombre</th>
-              <th>Correo</th>
-              <th>Rol</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            <?php foreach ($usuarios as $usuario): ?>
+        <div class="table-container">
+          <table>
+            <thead>
               <tr>
-
-                <td><?= htmlspecialchars($usuario['nombre']) ?></td>
-                <td><?= htmlspecialchars($usuario['correo_electronico']) ?></td>
-                <td>
-                  <span class="badge">
-                    <?= htmlspecialchars($usuario['rol']) ?>
-                  </span>
-                </td>
-                <td>
-                  <a href="editar_usuario.php?id=<?= $usuario['id'] ?>" class="btn">
-                    <i class="fas fa-edit"></i> Modificar
-                  </a>
-                  <a href="../php/eliminar_usuario.php?id=<?= $usuario['id'] ?>" 
-                    class="btn" 
-                    style="background-color: #dc2626; margin-left: 8px;"
-                    onclick="return confirm('¿Estás seguro que quieres eliminar este usuario?');">
-                    <i class="fas fa-trash-alt"></i> Eliminar
-                  </a>
-                </td>
+                <th>Nombre Completo</th>
+                <th>Correo</th>
+                <th>Rol</th>
+                <th>Acciones</th>
               </tr>
-            <?php endforeach; ?>
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              <?php foreach ($usuarios as $usuario): ?>
+                <tr>
+                  <td><?= htmlspecialchars($usuario['nombre'] . ' ' . $usuario['apellido']) ?></td>
+                  <td><?= htmlspecialchars($usuario['correo_electronico']) ?></td>
+                  <td>
+                    <span class="badge <?= $usuario['rol'] === 'admin' ? 'admin' : 'portero' ?>">
+                      <?= htmlspecialchars($usuario['rol']) ?>
+                    </span>
+                  </td>
+                  <td class="actions">
+                    <a href="editar_usuario.php?id=<?= $usuario['id'] ?>" class="btn edit">
+                      <i class="fas fa-edit"></i> Editar
+                    </a>
+                    <a href="../php/eliminar_usuario.php?id=<?= $usuario['id'] ?>" 
+                      class="btn delete"
+                      onclick="return confirm('¿Estás seguro de eliminar este usuario?');">
+                      <i class="fas fa-trash-alt"></i> Eliminar
+                    </a>
+                  </td>
+                </tr>
+              <?php endforeach; ?>
+            </tbody>
+          </table>
+        </div>
       <?php else: ?>
-        <p class="no-data">No hay usuarios registrados.</p>
+        <div class="no-data">
+          <i class="fas fa-users-slash"></i>
+          <p>No hay usuarios registrados</p>
+        </div>
       <?php endif; ?>
     </div>
   </main>
 
-  <script src="../js/sidebaropen.js"></script>
+  <script src="../js/sidebar.js"></script>
 </body>
 </html>

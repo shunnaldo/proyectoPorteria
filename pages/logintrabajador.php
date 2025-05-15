@@ -8,11 +8,14 @@
     <link rel="stylesheet" href="../css/logintrabajador.css">
 </head>
 <body>
-        <div class="login-container">
+    <div class="login-container">
         <div class="login-header">
             <h1>Bienvenido de vuelta</h1>
             <p>Ingresa tus credenciales para continuar</p>
         </div>
+        
+        <!-- Contenedor para mensajes de error -->
+        <div id="error-message" class="error-message" style="display: none;"></div>
         
         <form action="../php/login.php" method="POST" class="login-form" id="loginForm">
             <div class="form-group">
@@ -33,12 +36,10 @@
             </div>
             
             <button type="submit" class="btn" id="loginBtn">Iniciar sesión</button>
-            
-
         </form>
     </div>
 
-<script>
+    <script>
         // Mostrar/ocultar contraseña
         const togglePassword = document.getElementById('togglePassword');
         const password = document.getElementById('password');
@@ -55,15 +56,44 @@
 
         // Animación de carga al enviar el formulario
         document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault(); // Prevenir el envío normal del formulario
+            
             const btn = document.getElementById('loginBtn');
             btn.classList.add('loading');
             btn.disabled = true;
             
-            // Simulamos un retraso para mostrar la animación (quitar en producción)
-            setTimeout(() => {
+            // Enviar datos mediante AJAX
+            const formData = new FormData(this);
+            
+            fetch(this.action, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.text())
+            .then(data => {
+                if (data === "success_admin") {
+                    window.location.href = "../pages/dashboard.php";
+                } else if (data === "success_portero") {
+                    window.location.href = "../pages/portero_portones.php";
+                } else {
+                    // Mostrar mensaje de error
+                    const errorMessage = document.getElementById('error-message');
+                    errorMessage.textContent = data;
+                    errorMessage.style.display = 'block';
+                    
+                    // Ocultar mensaje después de 5 segundos
+                    setTimeout(() => {
+                        errorMessage.style.display = 'none';
+                    }, 5000);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            })
+            .finally(() => {
                 btn.classList.remove('loading');
                 btn.disabled = false;
-            }, 2000);
+            });
         });
     </script>
 </body>
