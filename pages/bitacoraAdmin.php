@@ -20,7 +20,7 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "admin") {
 <body>
     <?php include 'sidebar.php'; ?>
 
-<br><br><br><br><br>
+<br>
     <div class="bit-container">
         <div class="bit-header">
             <h1 class="bit-title">Bitácora de Ingresos</h1>

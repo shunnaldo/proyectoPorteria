@@ -76,16 +76,7 @@ function isActive($page, $current) {
             </a>
             
             <div class="menu-title">Configuración</div>
-
-            <a href="ajustes.php" class="menu-item <?php echo isActive('ajustes.php', $current_page); ?>">
-                <i class="fas fa-cog"></i>
-                <span class="menu-text">Ajustes</span>
-            </a>
-            
-            <a href="notificaciones.php" class="menu-item <?php echo isActive('notificaciones.php', $current_page); ?>">
-                <i class="fas fa-bell"></i>
-                <span class="menu-text">Notificaciones</span>
-            </a>
+ 
 
             <a href="../php/logout.php" class="menu-item">
                 <i class="fas fa-sign-out-alt"></i>
@@ -97,7 +88,7 @@ function isActive($page, $current) {
             <div class="user-profile">
                 <div class="user-avatar">AD</div>
                 <div class="user-info">
-                    <h4>Admin User</h4>
+                    <h4>Admin</h4>
                     <p>Administrador</p>
                 </div>
             </div>
