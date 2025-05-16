@@ -42,14 +42,17 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "admin") {
         <div class="bit-table-container">
             <table id="tabla-bitacora" class="bit-table">
                 <thead>
-                    <tr>
-                        <th>RUT</th>
-                        <th>Fecha y Hora</th>
-                        <th>Persona</th>
-                        <th>Usuario</th>
-                        <th>Portón</th>
-                        <th>Ubicación</th>
-                    </tr>
+                <tr>
+                    <th>RUT</th>
+                    <th>Fecha y Hora</th>
+                    <th>Persona</th>
+                    <th>Género</th>
+                    <th>Transporte</th>
+                    <th>Patente</th>
+                    <th>Usuario</th>
+                    <th>Portón</th>
+                    <th>Ubicación</th>
+                </tr>
                 </thead>
                 <tbody>
                     <tr>
@@ -137,10 +140,13 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "admin") {
                 // Generar tabla para desktop
                 data.forEach(item => {
                     const row = document.createElement("tr");
-                    row.innerHTML = `
+                      row.innerHTML = `
                         <td>${item.rut || ''}</td>
                         <td>${item.fecha_hora || ''}</td>
                         <td>${(item.persona_nombre || '')} ${(item.persona_apellido || '')}</td>
+                        <td>${item.genero || ''}</td>
+                        <td>${item.medio_transporte || ''}</td>
+                        <td>${item.patente || ''}</td>
                         <td>${(item.usuario_nombre || '')} ${(item.usuario_apellido || '')}</td>
                         <td>${item.porton_nombre || ''}</td>
                         <td>${item.ubicacion || ''}</td>
@@ -152,38 +158,50 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "admin") {
                 data.forEach((item, index) => {
                     const card = document.createElement("div");
                     card.className = "bit-card";
-                    card.innerHTML = `
-                        <div class="bit-card-header" onclick="toggleBitCard(${index})">
-                            <h3>${item.fecha_hora || 'Registro'} - ${(item.persona_nombre || '')} ${(item.persona_apellido || '')}</h3>
-                            <span class="bit-arrow">▼</span>
+                                       card.innerHTML = `
+                    <div class="bit-card-header" onclick="toggleBitCard(${index})">
+                        <h3>${item.fecha_hora || 'Registro'} - ${(item.persona_nombre || '')} ${(item.persona_apellido || '')}</h3>
+                        <span class="bit-arrow">▼</span>
+                    </div>
+                    <div class="bit-card-content" id="bit-card-content-${index}">
+                        <div class="bit-card-row">
+                            <span class="bit-card-label">RUT:</span>
+                            <span class="bit-card-value">${item.rut || ''}</span>
                         </div>
-                        <div class="bit-card-content" id="bit-card-content-${index}">
-                            <div class="bit-card-row">
-                                <span class="bit-card-label">RUT:</span>
-                                <span class="bit-card-value">${item.rut || ''}</span>
-                            </div>
-                            <div class="bit-card-row">
-                                <span class="bit-card-label">Fecha y Hora:</span>
-                                <span class="bit-card-value">${item.fecha_hora || ''}</span>
-                            </div>
-                            <div class="bit-card-row">
-                                <span class="bit-card-label">Persona:</span>
-                                <span class="bit-card-value">${(item.persona_nombre || '')} ${(item.persona_apellido || '')}</span>
-                            </div>
-                            <div class="bit-card-row">
-                                <span class="bit-card-label">Usuario:</span>
-                                <span class="bit-card-value">${(item.usuario_nombre || '')} ${(item.usuario_apellido || '')}</span>
-                            </div>
-                            <div class="bit-card-row">
-                                <span class="bit-card-label">Portón:</span>
-                                <span class="bit-card-value">${item.porton_nombre || ''}</span>
-                            </div>
-                            <div class="bit-card-row">
-                                <span class="bit-card-label">Ubicación:</span>
-                                <span class="bit-card-value">${item.ubicacion || ''}</span>
-                            </div>
+                        <div class="bit-card-row">
+                            <span class="bit-card-label">Fecha y Hora:</span>
+                            <span class="bit-card-value">${item.fecha_hora || ''}</span>
                         </div>
-                    `;
+                        <div class="bit-card-row">
+                            <span class="bit-card-label">Persona:</span>
+                            <span class="bit-card-value">${(item.persona_nombre || '')} ${(item.persona_apellido || '')}</span>
+                        </div>
+                        <div class="bit-card-row">
+                            <span class="bit-card-label">Género:</span>
+                            <span class="bit-card-value">${item.genero || ''}</span>
+                        </div>
+                        <div class="bit-card-row">
+                            <span class="bit-card-label">Medio de Transporte:</span>
+                            <span class="bit-card-value">${item.medio_transporte || ''}</span>
+                        </div>
+                        <div class="bit-card-row">
+                            <span class="bit-card-label">Patente:</span>
+                            <span class="bit-card-value">${item.patente || 'No aplica'}</span>
+                        </div>
+                        <div class="bit-card-row">
+                            <span class="bit-card-label">Usuario:</span>
+                            <span class="bit-card-value">${(item.usuario_nombre || '')} ${(item.usuario_apellido || '')}</span>
+                        </div>
+                        <div class="bit-card-row">
+                            <span class="bit-card-label">Portón:</span>
+                            <span class="bit-card-value">${item.porton_nombre || ''}</span>
+                        </div>
+                        <div class="bit-card-row">
+                            <span class="bit-card-label">Ubicación:</span>
+                            <span class="bit-card-value">${item.ubicacion || ''}</span>
+                        </div>
+                    </div>
+                `;
                     cardContainer.appendChild(card);
                 });
             }

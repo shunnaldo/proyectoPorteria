@@ -200,7 +200,7 @@ $stmt->close();
 
     cancelScanBtn.addEventListener('click', () => {
         stopCamera();
-        window.location.href = '../index.html'; // Ajusta si es necesario
+        window.location.href = 'portero_portones.php'; // Ajusta si es necesario
     });
 
     // Iniciar cámara por defecto
