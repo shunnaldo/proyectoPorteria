@@ -19,7 +19,6 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "portero") {
 </head>
 <body>
 
-
     <div class="bit-container">
         <div class="bit-header">
             <h1 class="bit-title">Bitácora de Ingresos</h1>
@@ -40,22 +39,22 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "portero") {
         <!-- Versión para desktop (tabla) -->
         <div class="bit-table-container">
             <table id="tabla-bitacora" class="bit-table">
-            <thead>
-                <tr>
-                    <th>RUT</th>
-                    <th>Fecha y Hora</th>
-                    <th>Persona</th>
-                    <th>Género</th>
-                    <th>Transporte</th>
-                    <th>Patente</th>
-                    <th>Usuario</th>
-                    <th>Portón</th>
-                    <th>Ubicación</th>
-                </tr>
-            </thead>
+                <thead>
+                    <tr>
+                        <th>RUT</th>
+                        <th>Fecha y Hora</th>
+                        <th>Persona</th>
+                        <th>Género</th>
+                        <th>Transporte</th>
+                        <th>Patente</th>
+                        <th>Usuario</th>
+                        <th>Portón</th>
+                        <th>Ubicación</th>
+                    </tr>
+                </thead>
                 <tbody>
                     <tr>
-                        <td colspan="6" class="bit-loading">Cargando datos...</td>
+                        <td colspan="9" class="bit-loading">Cargando datos...</td>
                     </tr>
                 </tbody>
             </table>
@@ -66,8 +65,7 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "portero") {
             <div class="bit-loading">Cargando datos...</div>
         </div>
 
-                <?php include 'botom-nav.php'; ?>
-
+        <?php include 'botom-nav.php'; ?>
     </div>
 
     <!-- Scripts adicionales -->
@@ -79,12 +77,23 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "portero") {
             const cardContainer = document.getElementById("bit-card-container");
             let bitacoraData = []; // Almacenar todos los datos para filtrar
             
-            // Configurar Flatpickr
+            // Obtener fecha actual en formato YYYY-MM-DD
+            function getCurrentDate() {
+                const today = new Date();
+                const year = today.getFullYear();
+                const month = String(today.getMonth() + 1).padStart(2, '0');
+                const day = String(today.getDate()).padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            }
+            
+            // Configurar Flatpickr con la fecha actual por defecto
+            const currentDate = getCurrentDate();
             const datePicker = flatpickr("#bit-date-filter", {
                 locale: "es",
                 dateFormat: "Y-m-d",
                 allowInput: true,
                 maxDate: "today",
+                defaultDate: currentDate, // Establecer fecha actual por defecto
                 onClose: function(selectedDates) {
                     if(selectedDates.length > 0) {
                         filterByDate(selectedDates[0]);
@@ -97,23 +106,19 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "portero") {
                 datePicker.open();
             });
             
-            // Botón para limpiar el filtro
+            // Botón para limpiar el filtro (vuelve a mostrar el día actual)
             document.getElementById('bit-clear-filter').addEventListener('click', function() {
-                datePicker.clear();
-                filterByDate(null);
+                datePicker.setDate(currentDate); // Restablecer a fecha actual
+                filterByDate(new Date(currentDate));
             });
             
-            // Función para filtrar por fecha
+            // Función para filtrar por fecha (ahora filtra por el día actual por defecto)
             function filterByDate(date) {
-                if (!date) {
-                    // Mostrar todos los datos si no hay fecha seleccionada
-                    renderData(bitacoraData);
-                    return;
-                }
+                // Si no hay fecha, usa la fecha actual por defecto
+                const filterDate = date ? date.toISOString().split('T')[0] : currentDate;
                 
-                const dateStr = date.toISOString().split('T')[0];
                 const filteredData = bitacoraData.filter(item => {
-                    return item.fecha_hora && item.fecha_hora.startsWith(dateStr);
+                    return item.fecha_hora && item.fecha_hora.startsWith(filterDate);
                 });
                 
                 renderData(filteredData);
@@ -128,12 +133,12 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "portero") {
                 if (data.length === 0) {
                     const noDataMsg = document.createElement('div');
                     noDataMsg.className = 'bit-error';
-                    noDataMsg.textContent = 'No hay registros para mostrar';
+                    noDataMsg.textContent = 'No hay registros para la fecha seleccionada';
                     cardContainer.appendChild(noDataMsg);
                     
                     tbody.innerHTML = `
                         <tr>
-                            <td colspan="6" style="text-align: center;">No hay registros para mostrar</td>
+                            <td colspan="9" style="text-align: center;">No hay registros para la fecha seleccionada</td>
                         </tr>
                     `;
                     return;
@@ -161,49 +166,49 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "portero") {
                     const card = document.createElement("div");
                     card.className = "bit-card";
                     card.innerHTML = `
-                    <div class="bit-card-header" onclick="toggleBitCard(${index})">
-                        <h3>${item.fecha_hora || 'Registro'} - ${(item.persona_nombre || '')} ${(item.persona_apellido || '')}</h3>
-                        <span class="bit-arrow">▼</span>
-                    </div>
-                    <div class="bit-card-content" id="bit-card-content-${index}">
-                        <div class="bit-card-row">
-                            <span class="bit-card-label">RUT:</span>
-                            <span class="bit-card-value">${item.rut || ''}</span>
+                        <div class="bit-card-header" onclick="toggleBitCard(${index})">
+                            <h3>${item.fecha_hora || 'Registro'} - ${(item.persona_nombre || '')} ${(item.persona_apellido || '')}</h3>
+                            <span class="bit-arrow">▼</span>
                         </div>
-                        <div class="bit-card-row">
-                            <span class="bit-card-label">Fecha y Hora:</span>
-                            <span class="bit-card-value">${item.fecha_hora || ''}</span>
+                        <div class="bit-card-content" id="bit-card-content-${index}">
+                            <div class="bit-card-row">
+                                <span class="bit-card-label">RUT:</span>
+                                <span class="bit-card-value">${item.rut || ''}</span>
+                            </div>
+                            <div class="bit-card-row">
+                                <span class="bit-card-label">Fecha y Hora:</span>
+                                <span class="bit-card-value">${item.fecha_hora || ''}</span>
+                            </div>
+                            <div class="bit-card-row">
+                                <span class="bit-card-label">Persona:</span>
+                                <span class="bit-card-value">${(item.persona_nombre || '')} ${(item.persona_apellido || '')}</span>
+                            </div>
+                            <div class="bit-card-row">
+                                <span class="bit-card-label">Género:</span>
+                                <span class="bit-card-value">${item.genero || ''}</span>
+                            </div>
+                            <div class="bit-card-row">
+                                <span class="bit-card-label">Medio de Transporte:</span>
+                                <span class="bit-card-value">${item.medio_transporte || ''}</span>
+                            </div>
+                            <div class="bit-card-row">
+                                <span class="bit-card-label">Patente:</span>
+                                <span class="bit-card-value">${item.patente || 'No aplica'}</span>
+                            </div>
+                            <div class="bit-card-row">
+                                <span class="bit-card-label">Usuario:</span>
+                                <span class="bit-card-value">${(item.usuario_nombre || '')} ${(item.usuario_apellido || '')}</span>
+                            </div>
+                            <div class="bit-card-row">
+                                <span class="bit-card-label">Portón:</span>
+                                <span class="bit-card-value">${item.porton_nombre || ''}</span>
+                            </div>
+                            <div class="bit-card-row">
+                                <span class="bit-card-label">Ubicación:</span>
+                                <span class="bit-card-value">${item.ubicacion || ''}</span>
+                            </div>
                         </div>
-                        <div class="bit-card-row">
-                            <span class="bit-card-label">Persona:</span>
-                            <span class="bit-card-value">${(item.persona_nombre || '')} ${(item.persona_apellido || '')}</span>
-                        </div>
-                        <div class="bit-card-row">
-                            <span class="bit-card-label">Género:</span>
-                            <span class="bit-card-value">${item.genero || ''}</span>
-                        </div>
-                        <div class="bit-card-row">
-                            <span class="bit-card-label">Medio de Transporte:</span>
-                            <span class="bit-card-value">${item.medio_transporte || ''}</span>
-                        </div>
-                        <div class="bit-card-row">
-                            <span class="bit-card-label">Patente:</span>
-                            <span class="bit-card-value">${item.patente || 'No aplica'}</span>
-                        </div>
-                        <div class="bit-card-row">
-                            <span class="bit-card-label">Usuario:</span>
-                            <span class="bit-card-value">${(item.usuario_nombre || '')} ${(item.usuario_apellido || '')}</span>
-                        </div>
-                        <div class="bit-card-row">
-                            <span class="bit-card-label">Portón:</span>
-                            <span class="bit-card-value">${item.porton_nombre || ''}</span>
-                        </div>
-                        <div class="bit-card-row">
-                            <span class="bit-card-label">Ubicación:</span>
-                            <span class="bit-card-value">${item.ubicacion || ''}</span>
-                        </div>
-                    </div>
-                `;
+                    `;
                     cardContainer.appendChild(card);
                 });
             }
@@ -218,13 +223,14 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "portero") {
                 })
                 .then(data => {
                     bitacoraData = data;
-                    renderData(data);
+                    // Al cargar los datos, filtrar por el día actual
+                    filterByDate(null);
                 })
                 .catch(error => {
                     console.error('Error al cargar la bitácora:', error);
                     tbody.innerHTML = `
                         <tr>
-                            <td colspan="6" class="bit-error">Error al cargar los datos. Por favor, intente nuevamente.</td>
+                            <td colspan="9" class="bit-error">Error al cargar los datos. Por favor, intente nuevamente.</td>
                         </tr>
                     `;
                     

@@ -1,4 +1,8 @@
 <?php
+header("Cache-Control: no-cache, no-store, must-revalidate");
+header("Pragma: no-cache");
+header("Expires: 0");
+
 session_start();
 require '../php/conexion.php';
 
@@ -7,7 +11,6 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== 'portero') {
     exit;
 }
 
-// Validar y almacenar porton_id
 $porton_id = $_GET["porton_id"] ?? null;
 if (!$porton_id || !is_numeric($porton_id)) {
     $_SESSION['error'] = "Portón no válido";
@@ -19,7 +22,6 @@ $_SESSION['porton_id'] = $porton_id;
 $usuario_id = $_SESSION["usuario"]["id"];
 $nombre_usuario = $_SESSION["usuario"]["nombre"];
 
-// Obtener nombre del portón
 $stmt = $conexion->prepare("SELECT nombre, estado FROM portones WHERE id = ?");
 $stmt->bind_param("i", $porton_id);
 $stmt->execute();
@@ -37,7 +39,44 @@ $stmt->close();
     <script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <link rel="stylesheet" href="../css/escanearQR.css">
-    <link rel="stylesheet" href="../css/botom-nav.css">
+    <style>
+        .camera-info {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 0.8rem;
+            color: #666;
+        }
+        
+        .zoom-controls {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .zoom-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        
+        @keyframes pulse {
+            0% { border-color: rgba(52, 152, 219, 0.8); }
+            50% { border-color: rgba(52, 152, 219, 0.4); }
+            100% { border-color: rgba(52, 152, 219, 0.8); }
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -51,18 +90,27 @@ $stmt->close();
                 <i class="bi bi-camera-video"></i>
             </button>
             <h1>Escanear QR de la Cédula Chilena</h1>
-            <p class="instructions">Apunta la cámara al código QR de la cédula.</p>
+            <p class="instructions">Acerca el QR del carnet a la cámara (2-5 cm de distancia)</p>
         </header>
 
         <main class="scanner-main">
             <div class="video-container">
                 <video id="video" autoplay playsinline></video>
                 <div class="scan-frame"></div>
+                <div class="zoom-controls">
+                    <button id="zoomIn" class="zoom-btn">+</button>
+                    <button id="zoomOut" class="zoom-btn">-</button>
+                </div>
+            </div>
+            
+            <div id="cameraInfo" class="camera-info">
+                <span id="cameraName">Cámara posterior</span>
+                <span id="cameraResolution"></span>
             </div>
 
             <div id="status" class="status-message">
                 <div class="loading-spinner"></div>
-                <span>📷 Esperando cámara...</span>
+                <span>📷 Acercando el carnet...</span>
             </div>
         </main>
 
@@ -79,6 +127,8 @@ $stmt->close();
     </div>
 
 <script>
+// Reemplaza todo el código JavaScript con esta versión mejorada
+document.addEventListener('DOMContentLoaded', async () => {
     const video = document.getElementById('video');
     const qrDataInput = document.getElementById('qrData');
     const status = document.getElementById('status');
@@ -86,36 +136,163 @@ $stmt->close();
     const toggleCameraBtn = document.getElementById('toggleCamera');
     const cancelScanBtn = document.getElementById('cancelScan');
     const closeCameraBtn = document.getElementById('closeCamera');
-    const icon = closeCameraBtn.querySelector('i');
-    let currentFacingMode = "environment";
-    let stream = null;
+    const zoomInBtn = document.getElementById('zoomIn');
+    const zoomOutBtn = document.getElementById('zoomOut');
+    const cameraName = document.getElementById('cameraName');
+    const cameraResolution = document.getElementById('cameraResolution');
 
-    function startCamera(facingMode) {
-        stopCamera();
-        navigator.mediaDevices.getUserMedia({ 
-            video: { 
-                facingMode: facingMode,
-                width: { ideal: 1280 },
-                height: { ideal: 720 }
-            } 
-        })
-        .then(s => {
-            stream = s;
-            video.srcObject = stream;
-            video.play();
-            statusText.textContent = "🔍 Buscando QR...";
-            status.querySelector('.loading-spinner').style.display = 'block';
-            requestAnimationFrame(scanQRCode);
-        })
-        .catch(err => {
-            console.error("No se pudo acceder a la cámara: ", err);
-            statusText.textContent = "❌ Error: No se pudo acceder a la cámara";
-            status.id = "error";
-            status.querySelector('.loading-spinner').style.display = 'none';
-        });
+    let stream = null;
+    let currentCameraIndex = 0;
+    let videoDevices = [];
+    let currentZoom = 1;
+    let scanActive = false;
+    let scanInterval;
+
+    // Configuración optimizada para QR pequeños
+    const SCAN_AREA_PERCENT = 0.25; // 25% del área central
+    const SCAN_INTERVAL = 300; // ms entre escaneos
+    const CONTRAST_FACTOR = 1.8; // Aumento de contraste
+
+    // Función para procesamiento de imagen
+    function enhanceImage(imageData) {
+        const data = new Uint8ClampedArray(imageData.data.length);
+        
+        // Convertir a escala de grises con mejor contraste
+        for (let i = 0; i < imageData.data.length; i += 4) {
+            const r = imageData.data[i];
+            const g = imageData.data[i + 1];
+            const b = imageData.data[i + 2];
+            
+            // Fórmula de luminosidad mejorada
+            const gray = Math.min(255, Math.max(0, 
+                (0.299 * r + 0.587 * g + 0.114 * b) * CONTRAST_FACTOR - 128 * (CONTRAST_FACTOR - 1)
+            ));
+            
+            data[i] = data[i + 1] = data[i + 2] = gray;
+            data[i + 3] = imageData.data[i + 3]; // Alpha channel
+        }
+        
+        return data;
     }
 
+    // Función de escaneo optimizada
+    function scanQRCode() {
+        if (!scanActive) return;
+        
+        try {
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            
+            // Usar resolución nativa del video
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            
+            // Definir área de escaneo más pequeña
+            const scanSize = Math.min(canvas.width, canvas.height) * SCAN_AREA_PERCENT;
+            const scanRegion = {
+                x: (canvas.width - scanSize) / 2,
+                y: (canvas.height - scanSize) / 2,
+                width: scanSize,
+                height: scanSize
+            };
+            
+            // Procesar imagen
+            const imageData = context.getImageData(
+                scanRegion.x, scanRegion.y, 
+                scanRegion.width, scanRegion.height
+            );
+            const enhancedData = enhanceImage(imageData);
+            
+            // Intentar leer QR
+            const qrCode = jsQR(enhancedData, scanRegion.width, scanRegion.height);
+            
+            if (qrCode) {
+                stopScanning();
+                statusText.textContent = "✅ QR detectado! Procesando...";
+                status.id = "success";
+                qrDataInput.value = qrCode.data;
+                document.getElementById('qrForm').submit();
+            }
+        } catch (error) {
+            console.error("Error en escaneo:", error);
+        }
+    }
+
+    // Iniciar escaneo periódico
+    function startScanning() {
+        if (scanActive) return;
+        scanActive = true;
+        scanInterval = setInterval(scanQRCode, SCAN_INTERVAL);
+    }
+
+    // Detener escaneo
+    function stopScanning() {
+        scanActive = false;
+        clearInterval(scanInterval);
+    }
+
+    // Iniciar cámara con configuración optimizada
+    async function startCamera(deviceId = null) {
+        stopCamera();
+        
+        const constraints = {
+            video: {
+                width: { ideal: 1920 },
+                height: { ideal: 1080 },
+                frameRate: { ideal: 60 },
+                advanced: [{
+                    focusMode: "continuous",
+                    exposureMode: "continuous"
+                }]
+            }
+        };
+        
+        if (deviceId) {
+            constraints.video.deviceId = { exact: deviceId };
+        } else {
+            constraints.video.facingMode = { ideal: 'environment' };
+        }
+        
+        try {
+            stream = await navigator.mediaDevices.getUserMedia(constraints);
+            video.srcObject = stream;
+            
+            // Mostrar información de la cámara
+            const track = stream.getVideoTracks()[0];
+            const settings = track.getSettings();
+            cameraName.textContent = track.label || "Cámara trasera";
+            cameraResolution.textContent = `${settings.width}×${settings.height} @ ${settings.frameRate}fps`;
+            
+            await video.play();
+            statusText.textContent = "🔍 Enfoque en el QR del carnet...";
+            startScanning();
+            
+        } catch (error) {
+            console.error("Error en cámara:", error);
+            showCameraError(error);
+        }
+    }
+
+    // Manejo de errores
+    function showCameraError(error) {
+        let errorMessage = "❌ Error en cámara";
+        
+        if (error.name === 'NotAllowedError') {
+            errorMessage = "❌ Permisos de cámara denegados";
+        } else if (error.name === 'NotFoundError') {
+            errorMessage = "❌ Cámara no encontrada";
+        } else if (error.name === 'NotReadableError') {
+            errorMessage = "❌ Cámara no accesible";
+        }
+        
+        statusText.textContent = errorMessage;
+        status.id = "error";
+    }
+
+    // Control de cámara
     function stopCamera() {
+        stopScanning();
         if (stream) {
             stream.getTracks().forEach(track => track.stop());
             video.srcObject = null;
@@ -123,106 +300,53 @@ $stmt->close();
         }
     }
 
-    function closeCamera() {
-        stopCamera();
-        video.style.display = 'none';
-        document.querySelector('.scan-frame').style.display = 'none';
-        statusText.textContent = "Cámara cerrada";
-        status.querySelector('.loading-spinner').style.display = 'none';
-    }
+    // Event listeners
+    zoomInBtn.addEventListener('click', () => {
+        currentZoom = Math.min(currentZoom + 0.25, 3);
+        video.style.transform = `scale(${currentZoom})`;
+    });
 
-    function openCamera() {
-        video.style.display = 'block';
-        document.querySelector('.scan-frame').style.display = 'block';
-        startCamera(currentFacingMode);
-    }
+    zoomOutBtn.addEventListener('click', () => {
+        currentZoom = Math.max(currentZoom - 0.25, 1);
+        video.style.transform = `scale(${currentZoom})`;
+    });
 
-    function scanQRCode() {
-        if (stream && video.readyState === video.HAVE_ENOUGH_DATA) {
-            const canvas = document.createElement("canvas");
-            const context = canvas.getContext("2d");
-
-            const videoRatio = video.videoWidth / video.videoHeight;
-            const containerWidth = video.parentElement.clientWidth;
-            const containerHeight = video.parentElement.clientHeight;
-
-            if (containerHeight * videoRatio > containerWidth) {
-                canvas.height = containerWidth / videoRatio;
-                canvas.width = containerWidth;
-            } else {
-                canvas.height = containerHeight;
-                canvas.width = containerHeight * videoRatio;
-            }
-
-            context.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-            const scanRegion = {
-                x: Math.max(0, (canvas.width - 300) / 2),
-                y: Math.max(0, (canvas.height - 300) / 2),
-                width: Math.min(300, canvas.width),
-                height: Math.min(300, canvas.height)
-            };
-
-            const imageData = context.getImageData(scanRegion.x, scanRegion.y, scanRegion.width, scanRegion.height);
-            const qrCode = jsQR(imageData.data, scanRegion.width, scanRegion.height);
-
-            if (qrCode) {
-                statusText.textContent = "✅ QR leído correctamente. Procesando...";
-                status.id = "success";
-                status.querySelector('.loading-spinner').style.display = 'none';
-                qrDataInput.value = qrCode.data;
-                stopCamera();
-                document.getElementById('qrForm').submit();
-            } else {
-                requestAnimationFrame(scanQRCode);
-            }
-        } else {
-            requestAnimationFrame(scanQRCode);
-        }
-    }
-
-    toggleCameraBtn.addEventListener('click', () => {
-        currentFacingMode = currentFacingMode === "environment" ? "user" : "environment";
-        startCamera(currentFacingMode);
+    toggleCameraBtn.addEventListener('click', async () => {
+        if (videoDevices.length < 2) return;
+        currentCameraIndex = (currentCameraIndex + 1) % videoDevices.length;
+        startCamera(videoDevices[currentCameraIndex].deviceId);
     });
 
     closeCameraBtn.addEventListener('click', () => {
         if (stream) {
-            closeCamera();
-            closeCameraBtn.classList.add('btn-open');
-            icon.className = 'bi bi-camera-video';
+            stopCamera();
+            video.style.transform = 'scale(1)';
+            currentZoom = 1;
         } else {
-            openCamera();
-            closeCameraBtn.classList.remove('btn-open');
-            icon.className = 'bi bi-x-lg';
+            startCamera();
         }
     });
 
     cancelScanBtn.addEventListener('click', () => {
         stopCamera();
-        window.location.href = 'portero_portones.php'; // Ajusta si es necesario
+        window.location.href = 'portero_portones.php';
     });
 
-    // Iniciar cámara por defecto
-    startCamera(currentFacingMode);
+    // Inicialización
+    async function init() {
+        try {
+            const devices = await navigator.mediaDevices.enumerateDevices();
+            videoDevices = devices.filter(d => d.kind === 'videoinput');
+            toggleCameraBtn.style.display = videoDevices.length > 1 ? 'block' : 'none';
+            await startCamera();
+        } catch (error) {
+            console.error("Error inicial:", error);
+            statusText.textContent = "❌ Error al iniciar escáner";
+        }
+    }
 
-    window.addEventListener('orientationchange', () => {
-        setTimeout(() => {
-            if (stream) {
-                video.style.width = '';
-                video.style.height = '';
-            }
-        }, 200);
-    });
-</script>
-    <script>
-    // Añadir clase active al hacer clic
-    document.querySelectorAll('.tab').forEach(tab => {
-        tab.addEventListener('click', function() {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            this.classList.add('active');
-        });
-    });
+    init();
+});
 </script>
 </body>
 </html>
