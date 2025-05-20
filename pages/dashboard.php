@@ -3,11 +3,13 @@ session_start();
 if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "admin") {
     header("Location: ../pages/logintrabajador.php");
     exit;
-}
+} 
 require '../php/conexion.php';
 require '../php/dashboard_functions.php';
-?>
 
+// Obtener el portón seleccionado si existe
+$porton_seleccionado = isset($_GET['porton_id']) ? intval($_GET['porton_id']) : 0;
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -32,6 +34,24 @@ require '../php/dashboard_functions.php';
                 </div>
             </header>
             
+            <!-- Selector de portones -->
+            <div class="porton-selector mb-4">
+                <form id="portonForm" method="get">
+                    <div class="row align-items-center">
+                        <div class="col-md-4">
+                            <label for="portonSelect" class="form-label">Seleccionar Portón:</label>
+                            <select class="form-select" id="portonSelect" name="porton_id">
+                                <option value="0" <?php echo $porton_seleccionado == 0 ? 'selected' : ''; ?>>Todos los Portones (Vista Global)</option>
+                                <?php echo getPortonesParaSelector($conexion); ?>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-primary">Filtrar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            
             <main class="dashboard-container">
                 <!-- Sección de Estadísticas -->
                 <section class="stats-section">
@@ -51,7 +71,7 @@ require '../php/dashboard_functions.php';
                         </div>
                         <div class="stat-info">
                             <h3>Ingresos Hoy</h3>
-                            <span><?php echo getIngresosHoy($conexion); ?></span>
+                            <span><?php echo $porton_seleccionado ? getIngresosHoyPorPorton($conexion, $porton_seleccionado) : getIngresosHoy($conexion); ?></span>
                         </div>
                     </div>
                     
@@ -93,7 +113,47 @@ require '../php/dashboard_functions.php';
                     </div>
                 </section>
                 
-                <!-- Últimos Ingresos -->
+                <!-- Si hay un portón seleccionado, mostrar sus datos específicos -->
+                <?php if ($porton_seleccionado): ?>
+                <section class="specific-porton-section mt-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="mb-0">Datos específicos del Portón seleccionado</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h4>Ingresos por Hora</h4>
+                                    <div class="chart-wrapper">
+                                        <canvas id="ingresosHoraPortonChart"></canvas>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <h4>Últimos Ingresos</h4>
+                                    <div class="table-responsive">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>Nombre</th>
+                                                    <th>Portón</th>
+                                                    <th>Fecha/Hora</th>
+                                                    <th>Patente</th>
+                                                    <th>Portero</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <?php echo getUltimosIngresos($conexion, $porton_seleccionado); ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <?php endif; ?>
+                
+                <!-- Últimos Ingresos (globales) -->
                 <section class="recent-entries">
                     <h2>Últimos Ingresos</h2>
                     <div class="table-responsive">
@@ -143,7 +203,7 @@ require '../php/dashboard_functions.php';
             }
         };
 
-        // Gráfico de ingresos por hora
+        // Gráfico de ingresos por hora (global)
         const ingresosHoraCtx = document.getElementById('ingresosHoraChart').getContext('2d');
         const ingresosHoraChart = new Chart(ingresosHoraCtx, {
             type: 'bar',
@@ -160,7 +220,7 @@ require '../php/dashboard_functions.php';
             options: chartOptions
         });
 
-        // Gráfico de actividad de portones
+        // Gráfico de actividad de portones (global)
         const portonesCtx = document.getElementById('portonesChart').getContext('2d');
         const portonesChart = new Chart(portonesCtx, {
             type: 'doughnut',
@@ -189,10 +249,32 @@ require '../php/dashboard_functions.php';
             }
         });
 
+        // Gráfico de ingresos por hora para portón específico
+        <?php if ($porton_seleccionado): ?>
+        const ingresosHoraPortonCtx = document.getElementById('ingresosHoraPortonChart').getContext('2d');
+        const ingresosHoraPortonChart = new Chart(ingresosHoraPortonCtx, {
+            type: 'bar',
+            data: {
+                labels: <?php echo json_encode(getHorasDelDia()); ?>,
+                datasets: [{
+                    label: 'Ingresos por Hora',
+                    data: <?php echo json_encode(getIngresosPorHora($conexion, $porton_seleccionado)); ?>,
+                    backgroundColor: 'rgba(75, 192, 192, 0.7)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: chartOptions
+        });
+        <?php endif; ?>
+
         // Redimensionar gráficos al cambiar tamaño de pantalla
         window.addEventListener('resize', function() {
             ingresosHoraChart.resize();
             portonesChart.resize();
+            <?php if ($porton_seleccionado): ?>
+            ingresosHoraPortonChart.resize();
+            <?php endif; ?>
         });
     </script>
 </body>

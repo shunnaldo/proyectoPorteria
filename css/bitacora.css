@@ -1,0 +1,242 @@
+/* Estilos base minimalistas */
+body {
+    font-family: 'Segoe UI', Roboto, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f5f7fa;
+    color: #333;
+    line-height: 1.6;
+}
+
+.bit-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Header */
+.bit-header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 15px;
+}
+
+.bit-title {
+    margin: 0;
+    color: #2c3e50;
+    font-size: 1.8rem;
+    font-weight: 600;
+}
+
+/* Filtros */
+.bit-filter, .bit-estado-filter {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.bit-date-filter {
+    display: flex;
+    align-items: center;
+}
+
+#bit-date-filter {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: 150px;
+}
+
+.bit-filter-button, .bit-clear-button {
+    background: none;
+    border: 1px solid #ddd;
+    padding: 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    color: #555;
+    transition: all 0.2s;
+}
+
+.bit-filter-button:hover, .bit-clear-button:hover {
+    background-color: #f0f0f0;
+}
+
+#estado-filter {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: white;
+}
+
+/* Tabla (Versión Desktop) */
+.bit-table-container {
+    overflow-x: auto;
+    margin-bottom: 30px;
+}
+
+.bit-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.bit-table th {
+    background-color: #2c3e50;
+    color: white;
+    padding: 12px 15px;
+    text-align: left;
+    font-weight: 500;
+}
+
+.bit-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.bit-table tr:hover {
+    background-color: #f8f9fa;
+}
+
+/* Cards (Versión Móvil) */
+.bit-card-container {
+    display: none;
+    margin-bottom: 30px;
+}
+
+.bit-card {
+    background-color: white;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    margin-bottom: 15px;
+    overflow: hidden;
+}
+
+.bit-card-header {
+    padding: 15px;
+    background-color: #2c3e50;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+}
+
+.bit-card-header h3 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.bit-arrow {
+    transition: transform 0.3s;
+}
+
+.bit-card-content {
+    padding: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+}
+
+.bit-card-content.bit-active {
+    padding: 15px;
+    max-height: 1000px;
+}
+
+.bit-card-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.bit-card-row:last-child {
+    border-bottom: none;
+}
+
+.bit-card-label {
+    font-weight: 600;
+    color: #555;
+}
+
+.bit-card-value {
+    text-align: right;
+}
+
+/* Botones de acción */
+.bit-action-btn {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.2s;
+    width: 100%;
+}
+
+.bit-action-btn:hover {
+    background-color: #2980b9;
+}
+
+.bit-finalizado {
+    color: #7f8c8d;
+    font-style: italic;
+    text-align: center;
+    display: block;
+    padding: 8px 0;
+}
+
+/* Estados y mensajes */
+.bit-loading, .bit-error {
+    text-align: center;
+    padding: 20px;
+    color: #7f8c8d;
+}
+
+.bit-error {
+    color: #e74c3c;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .bit-table-container {
+        display: none;
+    }
+    
+    .bit-card-container {
+        display: block;
+    }
+    
+    .bit-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .bit-title {
+        margin-bottom: 15px;
+        text-align: center;
+    }
+    
+    .bit-date-filter {
+        width: 100%;
+    }
+    
+    #bit-date-filter {
+        flex-grow: 1;
+    }
+}
+
+/* Efectos minimalistas */
+.bit-card-header.bit-active .bit-arrow {
+    transform: rotate(180deg);
+}
+
+.bit-table tr:last-child td {
+    border-bottom: none;
+}

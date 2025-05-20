@@ -40,6 +40,14 @@ body {
     color: #7f8c8d;
 }
 
+/* Selector de portones */
+.porton-selector {
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
 /* Tarjetas de estadísticas */
 .stats-section {
     display: grid;
@@ -120,6 +128,17 @@ body {
     width: 100%;
     height: calc(100% - 40px);
     min-height: 200px;
+}
+
+/* Sección específica de portón */
+.specific-porton-section .card {
+    border: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.specific-porton-section .card-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #e0e0e0;
 }
 
 /* Tabla de últimos ingresos */
@@ -240,6 +259,15 @@ body {
     .gates-container {
         grid-template-columns: repeat(2, 1fr);
     }
+    
+    .specific-porton-section .row {
+        flex-direction: column;
+    }
+    
+    .specific-porton-section .col-md-6 {
+        width: 100%;
+        margin-bottom: 20px;
+    }
 }
 
 /* Tablets en portrait y móviles grandes */
@@ -296,7 +324,7 @@ body {
         padding: 10px;
     }
     
-    .recent-entries, .gate-status {
+    .recent-entries, .gate-status, .specific-porton-section {
         padding: 15px 10px;
     }
     
@@ -326,7 +354,9 @@ body {
     
     .chart-container h2, 
     .recent-entries h2, 
-    .gate-status h2 {
+    .gate-status h2,
+    .specific-porton-section h3,
+    .specific-porton-section h4 {
         font-size: 1.1rem;
     }
 }

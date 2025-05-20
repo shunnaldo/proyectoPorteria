@@ -28,14 +28,19 @@ function getPersonasConPatente($conexion) {
     return $row['total'];
 }
 
-function getUltimosIngresos($conexion) {
+function getUltimosIngresos($conexion, $porton_id = null) {
     $query = "SELECT p.nombre, p.apellido, p.patente, po.nombre as porton, 
                      bi.fecha_hora, u.nombre as registrador
               FROM bitacora_ingresos bi
               JOIN personas p ON bi.persona_id = p.id
               JOIN portones po ON bi.porton_id = po.id
-              JOIN usuarios u ON bi.usuario_id = u.id
-              ORDER BY bi.fecha_hora DESC LIMIT 10";
+              JOIN usuarios u ON bi.usuario_id = u.id";
+    
+    if ($porton_id) {
+        $query .= " WHERE bi.porton_id = $porton_id";
+    }
+    
+    $query .= " ORDER BY bi.fecha_hora DESC LIMIT 10";
     
     $result = $conexion->query($query);
     $output = '';
@@ -83,11 +88,16 @@ function getHorasDelDia() {
     }, range(0, 23));
 }
 
-function getIngresosPorHora($conexion) {
+function getIngresosPorHora($conexion, $porton_id = null) {
     $query = "SELECT HOUR(fecha_hora) as hora, COUNT(*) as total 
               FROM bitacora_ingresos 
-              WHERE DATE(fecha_hora) = CURDATE()
-              GROUP BY HOUR(fecha_hora)";
+              WHERE DATE(fecha_hora) = CURDATE()";
+    
+    if ($porton_id) {
+        $query .= " AND porton_id = $porton_id";
+    }
+    
+    $query .= " GROUP BY HOUR(fecha_hora)";
     
     $result = $conexion->query($query);
     $data = array_fill(0, 24, 0);
@@ -125,5 +135,24 @@ function getUsoPortones($conexion) {
     }
     
     return $data;
+}
+
+function getPortonesParaSelector($conexion) {
+    $query = "SELECT id, nombre FROM portones ORDER BY nombre";
+    $result = $conexion->query($query);
+    
+    $options = '';
+    while ($row = $result->fetch_assoc()) {
+        $options .= '<option value="'.$row['id'].'">'.$row['nombre'].'</option>';
+    }
+    return $options;
+}
+
+function getIngresosHoyPorPorton($conexion, $porton_id) {
+    $query = "SELECT COUNT(*) as total FROM bitacora_ingresos 
+              WHERE DATE(fecha_hora) = CURDATE() AND porton_id = $porton_id";
+    $result = $conexion->query($query);
+    $row = $result->fetch_assoc();
+    return $row['total'];
 }
 ?>
