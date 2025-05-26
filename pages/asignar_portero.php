@@ -20,7 +20,6 @@ $portones_result = $conexion->query("SELECT id, nombre FROM portones");
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Asignar Portero a Portón</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="../css/sidebard.css">
     <link rel="stylesheet" href="../css/asignarportero.css">
 </head>
 <body>

@@ -15,7 +15,6 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "admin") {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editar Usuario</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="../css/sidebard.css">
 <link rel="stylesheet" href="../css/editar_usuario.css">
 </head>
 <body>
@@ -56,14 +55,14 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "admin") {
                     </div>
                 </div>
 
-                <div class="btn-group">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save"></i> Guardar cambios
-                    </button>
-                    <a href="ver_usuarios.php" class="btn btn-secondary">
-                        <i class="fas fa-times"></i> Cancelar
-                    </a>
-                </div>
+            <div class="btn-group">
+                <button type="submit" class="btn btn-save">
+                    <i class="fas fa-save"></i> Guardar cambios
+                </button>
+                <a href="ver_usuarios.php" class="btn btn-cancel">
+                    <i class="fas fa-times"></i> Cancelar
+                </a>
+            </div>
             </form>
         </div>
     </main>

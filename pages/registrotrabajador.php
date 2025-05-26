@@ -14,7 +14,6 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "admin") {
     <!-- Fuentes de Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Hojas de estilo -->
-    <link rel="stylesheet" href="../css/sidebard.css">
     <link rel="stylesheet" href="../css/registrotrabajador.css">
 
 </head>
@@ -107,35 +106,34 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "admin") {
     <!-- Scripts -->
     <script src="../js/sidebaropen.js"></script>
     <script>
-        // Mostrar/ocultar contraseña - Versión mejorada
-        document.getElementById('togglePassword').addEventListener('click', function() {
-            const icon = this.querySelector('i');
-            const password = document.getElementById('password');
-            
-            // Cambiar el tipo de input
-            const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
-            password.setAttribute('type', type);
-            
-            // Cambiar el icono
-            icon.classList.toggle('fa-eye');
-            icon.classList.toggle('fa-eye-slash');
-            
-            // Cambiar el color
-            icon.style.color = type === 'text' ? 'var(--primary-color)' : '#94a3b8';
-        });
+            document.getElementById('togglePassword').addEventListener('click', function() {
+                const icon = this.querySelector('i');
+                const password = document.getElementById('password');
+                
+                // Cambiar el tipo de input
+                const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+                password.setAttribute('type', type);
+                
+                // Cambiar el icono
+                icon.classList.toggle('fa-eye');
+                icon.classList.toggle('fa-eye-slash');
+                
+                // Cambiar el color
+                icon.style.color = type === 'text' ? '#1A1A1A' : '#5A5A5A';
+            });
 
-        // Animación de carga al enviar el formulario
-        document.getElementById('registerForm').addEventListener('submit', function(e) {
-            const btn = document.getElementById('registerBtn');
-            btn.classList.add('loading');
-            btn.disabled = true;
-            
-            // Simulamos un retraso para mostrar la animación (quitar en producción)
-            setTimeout(() => {
-                btn.classList.remove('loading');
-                btn.disabled = false;
-            }, 2000);
-        });
+            // Animación de carga al enviar el formulario
+            document.getElementById('registerForm').addEventListener('submit', function(e) {
+                const btn = document.getElementById('registerBtn');
+                btn.classList.add('loading');
+                btn.disabled = true;
+                
+                // Simulamos un retraso para mostrar la animación (quitar en producción)
+                setTimeout(() => {
+                    btn.classList.remove('loading');
+                    btn.disabled = false;
+                }, 2000);
+            });
     </script>
 </body>
 </html>

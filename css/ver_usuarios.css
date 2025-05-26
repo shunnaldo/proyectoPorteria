@@ -1,15 +1,20 @@
 :root {
-      --primary-color: #7c3aed;
-      --primary-dark: #5b21b6;
-      --text-color: #334155;
-      --light-gray: #f8fafc;
-      --border-color: #e2e8f0;
-      --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --primary-color: #FFD700;  /* Amarillo dorado profesional */
+      --primary-dark: #FFC000;   /* Amarillo más oscuro para hover/states */
+      --primary-darker: #B8860B; /* Amarillo oscuro para textos sobre claro */
+      --text-color: #333333;     /* Negro suavizado para mejor legibilidad */
+      --text-light: #5A5A5A;    /* Gris oscuro para texto secundario */
+      --light-gray: #F8F8F8;    /* Fondo muy claro */
+      --border-color: #E0E0E0;  /* Color de bordes suave */
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra más sutil */
+      --bg-dark: #1A1A1A;       /* Negro para elementos oscuros */
+      --success-color: #28A745; /* Mantenemos verde para éxito */
+      --danger-color: #DC3545;  /* Rojo para errores/eliminar */
     }
 
     body {
       font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-      background-color: #f1f5f9;
+      background-color: var(--light-gray);
       color: var(--text-color);
       margin: 0;
       padding: 0;
@@ -24,7 +29,7 @@
 
     .container {
       background-color: white;
-      border-radius: 16px;
+      border-radius: 8px; /* Bordes menos redondeados para más profesionalismo */
       box-shadow: var(--shadow);
       padding: 25px;
       margin: 20px auto;
@@ -34,7 +39,8 @@
     h2 {
       text-align: center;
       margin-bottom: 25px;
-      color: var(--primary-dark);
+      color: var(--bg-dark); /* Usamos el negro corporativo */
+      font-weight: 600;
     }
 
     table {
@@ -50,35 +56,55 @@
     }
 
     th {
-      background-color: var(--primary-color);
+      background-color: var(--bg-dark); /* Negro corporativo para cabeceras */
       color: white;
       font-weight: 600;
     }
 
     tr:hover {
-      background-color: rgba(124, 58, 237, 0.05);
+      background-color: rgba(255, 215, 0, 0.05); /* Amarillo muy suave al hover */
     }
 
     .btn {
       display: inline-block;
       padding: 8px 16px;
-      background-color: var(--primary-color);
+      background-color: var(--bg-dark); /* Botones en negro */
       color: white;
-      border-radius: 6px;
+      border-radius: 4px; /* Bordes menos redondeados */
       text-decoration: none;
       font-weight: 500;
-      transition: all 0.3s ease;
+      transition: all 0.2s ease;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background-color: var(--primary-color);
+      color: var(--text-color);
     }
 
     .btn:hover {
       background-color: var(--primary-dark);
-      transform: translateY(-2px);
+      transform: translateY(-1px); /* Efecto más sutil */
+      box-shadow: var(--shadow);
+    }
+
+    .btn-primary:hover {
+      background-color: var(--primary-dark);
+      color: var(--bg-dark);
     }
 
     .no-data {
       text-align: center;
       padding: 20px;
-      color: #64748b;
+      color: var(--text-light);
+    }
+
+    /* Elementos destacados con amarillo */
+    .highlight {
+      background-color: rgba(255, 215, 0, 0.15);
+      border-left: 3px solid var(--primary-color);
+      padding: 10px 15px;
     }
 
     /* Responsive */
