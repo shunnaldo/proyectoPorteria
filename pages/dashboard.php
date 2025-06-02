@@ -29,7 +29,7 @@ $porton_seleccionado = isset($_GET['porton_id']) ? intval($_GET['porton_id']) : 
             <header class="dashboard-header">
                 <h1>Dashboard</h1>
                 <div class="user-info">
-                    <span><?php echo htmlspecialchars($_SESSION['usuario']['nombre'] . ' ' . $_SESSION['usuario']['apellido']); ?></span>
+                    <span><?php echo htmlspecialchars($_SESSION['usuario']['nombre']); ?></span>
                     <i class="fas fa-user-circle"></i>
                 </div>
             </header>

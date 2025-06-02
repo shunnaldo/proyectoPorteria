@@ -7,7 +7,7 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "admin") {
     exit;
 }
 
-$sql = "SELECT id, nombre, apellido, correo_electronico, rol FROM usuarios";
+$sql = "SELECT id, alias, nombre, correo_electronico, rol FROM usuarios";
 $resultado = $conexion->query($sql);
 
 $usuarios = [];
@@ -42,6 +42,7 @@ if ($resultado && $resultado->num_rows > 0) {
           <table>
             <thead>
               <tr>
+                <th>Cargo</th>
                 <th>Nombre Completo</th>
                 <th>Correo</th>
                 <th>Rol</th>
@@ -51,7 +52,8 @@ if ($resultado && $resultado->num_rows > 0) {
             <tbody>
               <?php foreach ($usuarios as $usuario): ?>
                 <tr>
-                  <td><?= htmlspecialchars($usuario['nombre'] . ' ' . $usuario['apellido']) ?></td>
+                  <td><?= htmlspecialchars($usuario['alias']) ?></td>
+                  <td><?= htmlspecialchars($usuario['nombre']) ?></td>
                   <td><?= htmlspecialchars($usuario['correo_electronico']) ?></td>
                   <td>
                     <span class="badge <?= $usuario['rol'] === 'admin' ? 'admin' : 'portero' ?>">

@@ -7,7 +7,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $contrasena = $_POST["contrasena"];
 
     // Buscar usuario por correo
-    $stmt = $conexion->prepare("SELECT id, nombre, apellido, contrasena, rol FROM usuarios WHERE correo_electronico = ?");
+    $stmt = $conexion->prepare("SELECT id, alias, nombre, contrasena, rol FROM usuarios WHERE correo_electronico = ?");
     $stmt->bind_param("s", $correo);
     $stmt->execute();
     $resultado = $stmt->get_result();
@@ -20,8 +20,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Guardar los datos en sesión
             $_SESSION["usuario"] = [
                 "id" => $usuario["id"],
+                "alias" => $usuario["alias"],
                 "nombre" => $usuario["nombre"],
-                "apellido" => $usuario["apellido"],
                 "rol" => $usuario["rol"]
             ];
 

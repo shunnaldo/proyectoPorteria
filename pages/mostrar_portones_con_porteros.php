@@ -9,7 +9,7 @@ $query = "
         p.ubicacion,
         u.id AS portero_id, 
         u.nombre AS portero_nombre, 
-        u.apellido AS portero_apellido,
+        u.alias AS portero_alias,
         up.id AS asignacion_id
     FROM 
         portones p
@@ -111,7 +111,7 @@ $result = $conexion->query($query);
                             
                             if ($row['portero_id']) {
                                 $porteros[] = [
-                                    'nombre' => $row['portero_nombre'] . ' ' . $row['portero_apellido'],
+                                    'nombre' => $row['portero_nombre'],
                                     'asignacion_id' => $row['asignacion_id']
                                 ];
                             }

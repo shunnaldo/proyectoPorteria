@@ -52,21 +52,21 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "admin") {
                     </div>
                 <?php endif; ?>
 
-                <!-- Campo de nombre -->
+                <!-- Campo de Alias -->
                 <div class="form-group">
-                    <label for="nombre">Nombre</label>
+                    <label for="Alias">Alias</label>
                     <div class="input-field">
                         <i class="fas fa-user left-icon"></i>
-                        <input type="text" id="nombre" name="nombre" class="form-control" placeholder="Ingresa tu nombre" required>
+                        <input type="text" id="Alias" name="Alias" class="form-control" placeholder="Ingresa tu Alias" required>
                     </div>
                 </div>
                 
                 <!-- Resto de los campos -->
                 <div class="form-group">
-                    <label for="apellido">Apellido</label>
+                    <label for="nombre">Nombre Completo</label>
                     <div class="input-field">
                         <i class="fas fa-user left-icon"></i>
-                        <input type="text" id="apellido" name="apellido" class="form-control" placeholder="Ingresa tu apellido" required>
+                        <input type="text" id="nombre" name="nombre" class="form-control" placeholder="Ingresa tu nombre completo" required>
                     </div>
                 </div>
                 

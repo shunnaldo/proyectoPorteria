@@ -7,15 +7,15 @@ if (!isset($_SESSION["usuario"])) {
 }
 
 $usuario_id = $_SESSION["usuario"]["id"];
+$usuario_alias = $_SESSION["alias"]["alias"];
 $usuario_nombre = $_SESSION["usuario"]["nombre"];
-$usuario_apellido = $_SESSION["usuario"]["apellido"];
 $usuario_rol = $_SESSION["usuario"]["rol"];
 
 // Si quieres, puedes juntar todo en un array también:
 $usuario_data = [
     "id" => $usuario_id,
-    "nombre" => $usuario_nombre,
-    "apellido" => $usuario_apellido,
+    "alias" => $usuario_alias,
+    "apellido" => $usuario_nombre,
     "rol" => $usuario_rol
 ];
 ?>
