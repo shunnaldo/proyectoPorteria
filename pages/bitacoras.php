@@ -37,6 +37,7 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "portero") {
                     <option value="todos">Todos</option>
                     <option value="ingresada">Ingresada</option>
                     <option value="finalizada">Finalizada</option>
+                    <option value="expirada">Expirada</option>
                 </select>
             </div>
         </div>
@@ -46,7 +47,9 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "portero") {
                 <thead>
                     <tr>
                         <th>RUT</th>
-                        <th>Fecha y Hora</th>
+                        <th>Fecha</th>
+                        <th>Hora Ingreso</th>
+                        <th>Hora Salida</th>
                         <th>Persona</th>
                         <th>Género</th>
                         <th>Transporte</th>
@@ -60,7 +63,7 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "portero") {
                 </thead>
                 <tbody>
                     <tr>
-                        <td colspan="11" class="bit-loading">Cargando datos...</td>
+                        <td colspan="13" class="bit-loading">Cargando datos...</td>
                     </tr>
                 </tbody>
             </table>
@@ -82,10 +85,17 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "portero") {
         let bitacoraData = [];
 
         // Función para formatear fecha
-        function formatDateTime(dateTimeStr) {
-            if (!dateTimeStr) return '';
-            const date = new Date(dateTimeStr);
-            return date.toLocaleString('es-CL');
+        function formatDate(dateStr) {
+            if (!dateStr) return '';
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('es-CL');
+        }
+
+        // Función para formatear hora
+        function formatTime(timeStr) {
+            if (!timeStr) return '--:--';
+            const time = new Date(`1970-01-01T${timeStr}`);
+            return time.toLocaleTimeString('es-CL', {hour: '2-digit', minute:'2-digit'});
         }
 
         // Configuración de Flatpickr con cambio dinámico
@@ -123,15 +133,14 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "portero") {
             if (selectedDate) {
                 const filterDate = selectedDate.toISOString().split('T')[0];
                 filtered = filtered.filter(item => {
-                    if (!item.fecha_hora) return false;
-                    const itemDate = item.fecha_hora.split(' ')[0];
-                    return itemDate === filterDate;
+                    if (!item.fecha) return false;
+                    return item.fecha === filterDate;
                 });
             }
             
             // Filtrar por estado
             if (estado !== 'todos') {
-                filtered = filtered.filter(item => item.opciones === estado);
+                filtered = filtered.filter(item => item.estado.toLowerCase() === estado);
             }
             
             renderData(filtered);
@@ -151,7 +160,7 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "portero") {
 
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="11" class="bit-error">No hay registros para los filtros seleccionados</td>
+                        <td colspan="13" class="bit-error">No hay registros para los filtros seleccionados</td>
                     </tr>
                 `;
                 return;
@@ -163,20 +172,25 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "portero") {
                 const row = document.createElement("tr");
                 row.innerHTML = `
                     <td>${item.rut || ''}</td>
-                    <td>${formatDateTime(item.fecha_hora)}</td>
+                    <td>${item.fecha || ''}</td>
+                    <td>${item.hora_ingreso || '--:--'}</td>
+                    <td>${item.hora_salida || '--:--'}</td>
                     <td>${item.persona_nombre || ''} ${item.persona_apellido || ''}</td>
                     <td>${item.genero || ''}</td>
                     <td>${item.medio_transporte || ''}</td>
                     <td>${item.patente || 'N/A'}</td>
-                    <td>${item.usuario_nombre || ''} ${item.usuario_apellido || ''}</td>
+                    <td>${item.usuario_nombre || ''}</td>
                     <td>${item.porton_nombre || ''}</td>
                     <td>${item.ubicacion || ''}</td>
-                    <td class="${item.opciones === 'ingresada' ? 'bit-estado-ingresada' : 'bit-estado-finalizada'}">
-                        ${item.opciones === 'ingresada' ? 'Ingresada' : 'Finalizada'}
+                    <td class="bit-estado-${item.estado.toLowerCase()}">
+                        ${item.estado === 'Ingresada' ? 'Ingresada' : 
+                         item.estado === 'Finalizada' ? 'Finalizada' : 'Expirada'}
                     </td>
                     <td>
-                        ${item.opciones === 'ingresada' ? 
-                            `<button class="bit-action-btn" onclick="cambiarEstado(${item.id}, 'finalizada')">Finalizar</button>` : 
+                        ${item.estado === 'Ingresada' ? 
+                            `<button class="bit-action-btn" onclick="cambiarEstado(${item.id}, 'finalizada')">
+                                <i class="fas fa-sign-out-alt"></i> Marcar Salida
+                            </button>` : 
                             '<span class="bit-finalizado">Completado</span>'}
                     </td>
                 `;
@@ -191,7 +205,7 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "portero") {
                 card.className = "bit-card";
                 card.innerHTML = `
                     <div class="bit-card-header" onclick="toggleBitCard(${index})">
-                        <h3>${formatDateTime(item.fecha_hora)} - ${item.persona_nombre || ''} ${item.persona_apellido || ''}</h3>
+                        <h3>${item.fecha} - ${item.persona_nombre || ''} ${item.persona_apellido || ''}</h3>
                         <span class="bit-arrow">▼</span>
                     </div>
                     <div class="bit-card-content" id="bit-card-content-${index}">
@@ -200,8 +214,16 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "portero") {
                             <span class="bit-card-value">${item.rut || 'N/A'}</span>
                         </div>
                         <div class="bit-card-row">
-                            <span class="bit-card-label">Fecha y Hora:</span>
-                            <span class="bit-card-value">${formatDateTime(item.fecha_hora)}</span>
+                            <span class="bit-card-label">Fecha:</span>
+                            <span class="bit-card-value">${item.fecha || ''}</span>
+                        </div>
+                        <div class="bit-card-row">
+                            <span class="bit-card-label">Hora Ingreso:</span>
+                            <span class="bit-card-value">${item.hora_ingreso || '--:--'}</span>
+                        </div>
+                        <div class="bit-card-row">
+                            <span class="bit-card-label">Hora Salida:</span>
+                            <span class="bit-card-value">${item.hora_salida || '--:--'}</span>
                         </div>
                         <div class="bit-card-row">
                             <span class="bit-card-label">Persona:</span>
@@ -221,7 +243,7 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "portero") {
                         </div>
                         <div class="bit-card-row">
                             <span class="bit-card-label">Usuario:</span>
-                            <span class="bit-card-value">${item.usuario_nombre || ''} ${item.usuario_apellido || ''}</span>
+                            <span class="bit-card-value">${item.usuario_nombre || ''}</span>
                         </div>
                         <div class="bit-card-row">
                             <span class="bit-card-label">Portón:</span>
@@ -233,13 +255,16 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "portero") {
                         </div>
                         <div class="bit-card-row">
                             <span class="bit-card-label">Estado:</span>
-                            <span class="bit-card-value ${item.opciones === 'ingresada' ? 'bit-estado-ingresada' : 'bit-estado-finalizada'}">
-                                ${item.opciones === 'ingresada' ? 'Ingresada' : 'Finalizada'}
+                            <span class="bit-card-value bit-estado-${item.estado.toLowerCase()}">
+                                ${item.estado === 'Ingresada' ? 'Ingresada' : 
+                                 item.estado === 'Finalizada' ? 'Finalizada' : 'Expirada'}
                             </span>
                         </div>
                         <div class="bit-card-row bit-action-row">
-                            ${item.opciones === 'ingresada' ? 
-                                `<button class="bit-action-btn" onclick="cambiarEstado(${item.id}, 'finalizada')">Finalizar</button>` : 
+                            ${item.estado === 'Ingresada' ? 
+                                `<button class="bit-action-btn" onclick="cambiarEstado(${item.id}, 'finalizada')">
+                                    <i class="fas fa-sign-out-alt"></i> Marcar Salida
+                                </button>` : 
                                 '<span class="bit-finalizado">Registro completado</span>'}
                         </div>
                     </div>
@@ -275,18 +300,21 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "portero") {
             
             tbody.innerHTML = `
                 <tr>
-                    <td colspan="11" class="bit-error">Error al cargar los datos. Por favor, intente nuevamente.</td>
+                    <td colspan="13" class="bit-error">Error al cargar los datos. Por favor, intente nuevamente.</td>
                 </tr>
             `;
         }
 
         // Iniciar carga de datos
         loadData();
+
+        // Configurar recarga automática cada 60 segundos
+        setInterval(loadData, 60000);
     });
 
     // Funciones globales
     function cambiarEstado(id, nuevoEstado) {
-        if (confirm('¿Está seguro de marcar este registro como finalizado?')) {
+        if (confirm('¿Está seguro de marcar la salida de esta persona?')) {
             fetch('../php/actualizar_estado.php', {
                 method: 'POST',
                 headers: {
@@ -294,16 +322,17 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "portero") {
                 },
                 body: JSON.stringify({ 
                     id: id, 
-                    estado: nuevoEstado 
+                    estado: nuevoEstado,
+                    hora_salida: new Date().toISOString().slice(11, 19) // Envía la hora actual
                 })
             })
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    alert('Registro actualizado correctamente');
+                    alert('Salida registrada correctamente');
                     location.reload();
                 } else {
-                    alert('Error: ' + (data.message || 'No se pudo actualizar'));
+                    alert('Error: ' + (data.message || 'No se pudo registrar la salida'));
                 }
             })
             .catch(error => {

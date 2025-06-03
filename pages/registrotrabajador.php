@@ -54,10 +54,10 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "admin") {
 
                 <!-- Campo de Alias -->
                 <div class="form-group">
-                    <label for="Alias">Alias</label>
+                    <label for="alias">Cargo</label>
                     <div class="input-field">
                         <i class="fas fa-user left-icon"></i>
-                        <input type="text" id="Alias" name="Alias" class="form-control" placeholder="Ingresa tu Alias" required>
+                        <input type="text" id="alias" name="alias" class="form-control" placeholder="Ingresa tu cargo" required>
                     </div>
                 </div>
                 
