@@ -16,10 +16,11 @@ $query = "
     LEFT JOIN 
         usuario_porton up ON p.id = up.porton_id
     LEFT JOIN 
-        usuarios u ON up.usuario_id = u.id
+        usuarios u ON up.usuario_id = u.id AND u.rol = 'portero'
     ORDER BY 
         p.nombre ASC
 ";
+
 
 // Ejecutar la consulta
 $result = $conexion->query($query);
