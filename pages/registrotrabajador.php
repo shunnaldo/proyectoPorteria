@@ -95,6 +95,7 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "admin") {
                         <option value="" disabled selected>Selecciona un rol</option>
                         <option value="admin">Administrador</option>
                         <option value="portero">Portero</option>
+                        <option value="owner">Owner</option>
                     </select>
                 </div>
                 

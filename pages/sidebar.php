@@ -58,6 +58,11 @@ function isActive($page, $current) {
                     <i class="fas fa-user-plus"></i>
                     <span class="menu-text">Agregar nuevo</span>
                 </a>
+                <a href="ownerPortones.php" class="menu-item <?php echo isActive('ownerPortones.php', $current_page); ?>">
+                    <i class="fas fa-user-tag"></i>
+
+                    <span class="menu-text">Asignar owner</span>
+                </a>
             </div>
             
             <a href="crear_porton.php" class="menu-item <?php echo isActive('crear_porton.php', $current_page); ?>">

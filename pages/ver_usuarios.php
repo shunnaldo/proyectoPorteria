@@ -27,6 +27,44 @@ if ($resultado && $resultado->num_rows > 0) {
   <title>Usuarios Registrados</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="../css/ver_usuarios.css">
+  <style>
+    .filter-container {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 20px;
+    }
+
+    .filter-container label {
+      margin-right: 8px;
+      font-weight: bold;
+      align-self: center;
+    }
+
+    .form-control {
+      padding: 8px;
+      font-size: 1rem;
+    }
+
+    .badge {
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-weight: bold;
+      color: #fff;
+      text-transform: capitalize;
+    }
+
+    .badge.admin {
+      background-color: #007bff;
+    }
+
+    .badge.portero {
+      background-color: #28a745;
+    }
+
+    .badge.owner {
+      background-color: #6f42c1;
+    }
+  </style>
 </head>
 <body>
   <!-- Incluir el sidebar -->
@@ -36,6 +74,17 @@ if ($resultado && $resultado->num_rows > 0) {
   <main class="main-content">
     <div class="container">
       <h1><i class="fas fa-users"></i> Listado de Usuarios</h1>
+
+      <!-- Filtro por rol alineado a la derecha -->
+      <div class="filter-container">
+        <label for="filtroRol">Filtrar por rol:</label>
+        <select id="filtroRol" class="form-control">
+          <option value="admin" selected>Administrador</option>
+          <option value="portero">Portero</option>
+          <option value="owner">Owner</option>
+          <option value="todos">Mostrar todos</option>
+        </select>
+      </div>
 
       <?php if (count($usuarios) > 0): ?>
         <div class="table-container">
@@ -56,7 +105,7 @@ if ($resultado && $resultado->num_rows > 0) {
                   <td><?= htmlspecialchars($usuario['nombre']) ?></td>
                   <td><?= htmlspecialchars($usuario['correo_electronico']) ?></td>
                   <td>
-                    <span class="badge <?= $usuario['rol'] === 'admin' ? 'admin' : 'portero' ?>">
+                    <span class="badge <?= htmlspecialchars($usuario['rol']) ?>">
                       <?= htmlspecialchars($usuario['rol']) ?>
                     </span>
                   </td>
@@ -85,5 +134,25 @@ if ($resultado && $resultado->num_rows > 0) {
   </main>
 
   <script src="../js/sidebar.js"></script>
+  <script>
+    document.getElementById('filtroRol').addEventListener('change', function () {
+      const filtro = this.value;
+      const filas = document.querySelectorAll('tbody tr');
+
+      filas.forEach(fila => {
+        const rol = fila.querySelector('td:nth-child(4) span').textContent.trim();
+        if (filtro === 'todos' || rol === filtro) {
+          fila.style.display = '';
+        } else {
+          fila.style.display = 'none';
+        }
+      });
+    });
+
+    // Aplicar filtro por defecto al cargar
+    window.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('filtroRol').dispatchEvent(new Event('change'));
+    });
+  </script>
 </body>
 </html>
