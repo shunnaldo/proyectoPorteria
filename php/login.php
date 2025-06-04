@@ -32,6 +32,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             } elseif ($usuario["rol"] === "portero") {
                 echo "success_portero";
                 exit;
+            } elseif ($usuario["rol"] === "owner") {
+                echo "success_owner";
+                exit;
             } else {
                 echo "Rol no reconocido. Contacta al administrador.";
                 exit;

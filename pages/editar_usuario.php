@@ -44,6 +44,7 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "admin") {
                     <select id="rol" name="rol" required>
                         <option value="admin" <?= $usuario['rol'] === 'admin' ? 'selected' : '' ?>>Administrador</option>
                         <option value="portero" <?= $usuario['rol'] === 'portero' ? 'selected' : '' ?>>Portero</option>
+                        <option value="owner" <?= $usuario['rol'] === 'owner' ? 'selected' : '' ?>>Owner</option>
                     </select>
                 </div>
 

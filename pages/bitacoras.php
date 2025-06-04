@@ -10,16 +10,51 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "portero") {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bitácora de Ingresos</title>
+    <title>Bitácora de Ingresos - Portero</title>
     <link rel="stylesheet" href="../css/bitacora.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <style>
+        /* Estilos específicos para porteros */
+        .bit-filter-btn {
+            background-color: #6c757d; /* Gris para diferenciar */
+        }
+        
+        .bit-action-btn {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .bit-estado-ingresada {
+            color: #28a745;
+            font-weight: bold;
+        }
+        
+        .bit-estado-finalizada {
+            color: #17a2b8;
+            font-weight: bold;
+        }
+        
+        .bit-estado-expirada {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        
+        .bit-finalizado {
+            color: #6c757d;
+            font-style: italic;
+        }
+    </style>
 </head>
 <body>
 
     <div class="bit-container">
         <div class="bit-header">
-            <h1 class="bit-title">Bitácora de Ingresos</h1>
+            <h1 class="bit-title">Bitácora de Ingresos - Mis Portones</h1>
             <div class="bit-filter">
                 <div class="bit-date-filter">
                     <input type="text" id="bit-date-filter" placeholder="Seleccionar fecha" readonly>
@@ -54,7 +89,6 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "portero") {
                         <th>Género</th>
                         <th>Transporte</th>
                         <th>Patente</th>
-                        <th>Usuario</th>
                         <th>Portón</th>
                         <th>Ubicación</th>
                         <th>Estado</th>
@@ -63,7 +97,7 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "portero") {
                 </thead>
                 <tbody>
                     <tr>
-                        <td colspan="13" class="bit-loading">Cargando datos...</td>
+                        <td colspan="12" class="bit-loading">Cargando datos...</td>
                     </tr>
                 </tbody>
             </table>
@@ -84,24 +118,10 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "portero") {
         const cardContainer = document.getElementById("bit-card-container");
         let bitacoraData = [];
 
-        // Función para formatear fecha
-        function formatDate(dateStr) {
-            if (!dateStr) return '';
-            const date = new Date(dateStr);
-            return date.toLocaleDateString('es-CL');
-        }
-
-        // Función para formatear hora
-        function formatTime(timeStr) {
-            if (!timeStr) return '--:--';
-            const time = new Date(`1970-01-01T${timeStr}`);
-            return time.toLocaleTimeString('es-CL', {hour: '2-digit', minute:'2-digit'});
-        }
-
         // Configuración de Flatpickr con cambio dinámico
         const datePicker = flatpickr("#bit-date-filter", {
             locale: "es",
-            dateFormat: "Y-m-d",
+            dateFormat: "d/m/Y",
             allowInput: true,
             maxDate: "today",
             defaultDate: new Date(),
@@ -134,7 +154,9 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "portero") {
                 const filterDate = selectedDate.toISOString().split('T')[0];
                 filtered = filtered.filter(item => {
                     if (!item.fecha) return false;
-                    return item.fecha === filterDate;
+                    const itemDateParts = item.fecha.split('/');
+                    const itemDateFormatted = `${itemDateParts[2]}-${itemDateParts[1]}-${itemDateParts[0]}`;
+                    return itemDateFormatted === filterDate;
                 });
             }
             
@@ -160,7 +182,7 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "portero") {
 
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="13" class="bit-error">No hay registros para los filtros seleccionados</td>
+                        <td colspan="12" class="bit-error">No hay registros para los filtros seleccionados</td>
                     </tr>
                 `;
                 return;
@@ -171,7 +193,7 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "portero") {
             data.forEach(item => {
                 const row = document.createElement("tr");
                 row.innerHTML = `
-                    <td>${item.rut || ''}</td>
+                    <td>${item.rut_completo || item.rut || ''}</td>
                     <td>${item.fecha || ''}</td>
                     <td>${item.hora_ingreso || '--:--'}</td>
                     <td>${item.hora_salida || '--:--'}</td>
@@ -179,15 +201,13 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "portero") {
                     <td>${item.genero || ''}</td>
                     <td>${item.medio_transporte || ''}</td>
                     <td>${item.patente || 'N/A'}</td>
-                    <td>${item.usuario_nombre || ''}</td>
                     <td>${item.porton_nombre || ''}</td>
                     <td>${item.ubicacion || ''}</td>
                     <td class="bit-estado-${item.estado.toLowerCase()}">
-                        ${item.estado === 'Ingresada' ? 'Ingresada' : 
-                         item.estado === 'Finalizada' ? 'Finalizada' : 'Expirada'}
+                        ${item.estado}
                     </td>
                     <td>
-                        ${item.estado === 'Ingresada' ? 
+                        ${item.estado.toLowerCase() === 'ingresada' ? 
                             `<button class="bit-action-btn" onclick="cambiarEstado(${item.id}, 'finalizada')">
                                 <i class="fas fa-sign-out-alt"></i> Marcar Salida
                             </button>` : 
@@ -211,7 +231,7 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "portero") {
                     <div class="bit-card-content" id="bit-card-content-${index}">
                         <div class="bit-card-row">
                             <span class="bit-card-label">RUT:</span>
-                            <span class="bit-card-value">${item.rut || 'N/A'}</span>
+                            <span class="bit-card-value">${item.rut_completo || item.rut || 'N/A'}</span>
                         </div>
                         <div class="bit-card-row">
                             <span class="bit-card-label">Fecha:</span>
@@ -242,10 +262,6 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "portero") {
                             <span class="bit-card-value">${item.patente || 'N/A'}</span>
                         </div>
                         <div class="bit-card-row">
-                            <span class="bit-card-label">Usuario:</span>
-                            <span class="bit-card-value">${item.usuario_nombre || ''}</span>
-                        </div>
-                        <div class="bit-card-row">
                             <span class="bit-card-label">Portón:</span>
                             <span class="bit-card-value">${item.porton_nombre || ''}</span>
                         </div>
@@ -256,12 +272,11 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "portero") {
                         <div class="bit-card-row">
                             <span class="bit-card-label">Estado:</span>
                             <span class="bit-card-value bit-estado-${item.estado.toLowerCase()}">
-                                ${item.estado === 'Ingresada' ? 'Ingresada' : 
-                                 item.estado === 'Finalizada' ? 'Finalizada' : 'Expirada'}
+                                ${item.estado}
                             </span>
                         </div>
                         <div class="bit-card-row bit-action-row">
-                            ${item.estado === 'Ingresada' ? 
+                            ${item.estado.toLowerCase() === 'ingresada' ? 
                                 `<button class="bit-action-btn" onclick="cambiarEstado(${item.id}, 'finalizada')">
                                     <i class="fas fa-sign-out-alt"></i> Marcar Salida
                                 </button>` : 
@@ -276,7 +291,7 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "portero") {
 
         // Cargar datos iniciales
         function loadData() {
-            fetch('../php/get_bitacora.php')
+            fetch('../php/get_bitacora_portero.php')
                 .then(response => {
                     if (!response.ok) throw new Error('Error al cargar los datos');
                     return response.json();
@@ -284,6 +299,10 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "portero") {
                 .then(data => {
                     bitacoraData = data;
                     filterData(); // Aplicar filtros iniciales
+                    
+                    // Mostrar portones asignados en consola para debug
+                    const portonesUnicos = [...new Set(data.map(item => item.porton_nombre))];
+                    console.log('Portones asignados al portero:', portonesUnicos);
                 })
                 .catch(error => {
                     console.error('Error:', error);
@@ -300,7 +319,7 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "portero") {
             
             tbody.innerHTML = `
                 <tr>
-                    <td colspan="13" class="bit-error">Error al cargar los datos. Por favor, intente nuevamente.</td>
+                    <td colspan="12" class="bit-error">Error al cargar los datos. Por favor, intente nuevamente.</td>
                 </tr>
             `;
         }
@@ -323,7 +342,7 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "portero") {
                 body: JSON.stringify({ 
                     id: id, 
                     estado: nuevoEstado,
-                    hora_salida: new Date().toISOString().slice(11, 19) // Envía la hora actual
+                    hora_salida: new Date().toLocaleTimeString('es-CL', {hour: '2-digit', minute:'2-digit'})
                 })
             })
             .then(response => response.json())

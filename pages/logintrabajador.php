@@ -75,6 +75,8 @@
                     window.location.href = "../pages/dashboard.php";
                 } else if (data === "success_portero") {
                     window.location.href = "../pages/portero_portones.php";
+                }  else if (data === "success_owner") {
+                    window.location.href = "../pages/ownerVista.php";
                 } else {
                     // Mostrar mensaje de error
                     const errorMessage = document.getElementById('error-message');
