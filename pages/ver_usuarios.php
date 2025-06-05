@@ -7,13 +7,23 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "admin") {
     exit;
 }
 
-$sql = "SELECT id, alias, nombre, correo_electronico, rol FROM usuarios";
+$sql = "SELECT id, alias, nombre, correo_electronico, rol, rut, fecha_nacimiento FROM usuarios";
 $resultado = $conexion->query($sql);
 
 $usuarios = [];
 
 if ($resultado && $resultado->num_rows > 0) {
     while ($fila = $resultado->fetch_assoc()) {
+        // Calcular edad si tiene fecha de nacimiento
+        if (!empty($fila['fecha_nacimiento'])) {
+            $fechaNacimiento = new DateTime($fila['fecha_nacimiento']);
+            $hoy = new DateTime();
+            $edad = $hoy->diff($fechaNacimiento)->y;
+            $fila['edad'] = $edad;
+        } else {
+            $fila['edad'] = '—'; // No disponible
+        }
+
         $usuarios[] = $fila;
     }
 }
@@ -94,6 +104,9 @@ if ($resultado && $resultado->num_rows > 0) {
                 <th>Cargo</th>
                 <th>Nombre Completo</th>
                 <th>Correo</th>
+                <th>RUT</th>
+                <th>Fecha Nac.</th>
+                <th>Edad</th>
                 <th>Rol</th>
                 <th>Acciones</th>
               </tr>
@@ -104,6 +117,9 @@ if ($resultado && $resultado->num_rows > 0) {
                   <td><?= htmlspecialchars($usuario['alias']) ?></td>
                   <td><?= htmlspecialchars($usuario['nombre']) ?></td>
                   <td><?= htmlspecialchars($usuario['correo_electronico']) ?></td>
+                  <td><?= htmlspecialchars($usuario['rut'] ?? '—') ?></td>
+                  <td><?= htmlspecialchars($usuario['fecha_nacimiento'] ?? '—') ?></td>
+                  <td><?= htmlspecialchars($usuario['edad']) ?></td>
                   <td>
                     <span class="badge <?= htmlspecialchars($usuario['rol']) ?>">
                       <?= htmlspecialchars($usuario['rol']) ?>
@@ -114,8 +130,8 @@ if ($resultado && $resultado->num_rows > 0) {
                       <i class="fas fa-edit"></i> Editar
                     </a>
                     <a href="../php/eliminar_usuario.php?id=<?= $usuario['id'] ?>" 
-                      class="btn delete"
-                      onclick="return confirm('¿Estás seguro de eliminar este usuario?');">
+                       class="btn delete"
+                       onclick="return confirm('¿Estás seguro de eliminar este usuario?');">
                       <i class="fas fa-trash-alt"></i> Eliminar
                     </a>
                   </td>
@@ -140,7 +156,7 @@ if ($resultado && $resultado->num_rows > 0) {
       const filas = document.querySelectorAll('tbody tr');
 
       filas.forEach(fila => {
-        const rol = fila.querySelector('td:nth-child(4) span').textContent.trim();
+        const rol = fila.querySelector('td:nth-child(7) span').textContent.trim();
         if (filtro === 'todos' || rol === filtro) {
           fila.style.display = '';
         } else {

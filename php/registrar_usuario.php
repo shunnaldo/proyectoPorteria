@@ -8,15 +8,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $contrasena = $_POST["contrasena"];
     $rol = $_POST["rol"];
 
+    $rut = !empty($_POST["rut"]) ? $_POST["rut"] : null;
+    $fecha_nacimiento = !empty($_POST["fecha_nacimiento"]) ? $_POST["fecha_nacimiento"] : null;
+
     $contrasena_hashed = password_hash($contrasena, PASSWORD_DEFAULT);
 
     try {
-        $stmt = $conexion->prepare("INSERT INTO usuarios (alias, nombre, correo_electronico, contrasena, rol) VALUES (?, ?, ?, ?, ?)");
+        $stmt = $conexion->prepare("INSERT INTO usuarios (alias, nombre, correo_electronico, contrasena, rol, rut, fecha_nacimiento) VALUES (?, ?, ?, ?, ?, ?, ?)");
         if (!$stmt) {
             throw new Exception("Fallo al preparar la consulta: " . $conexion->error);
         }
 
-        $stmt->bind_param("sssss", $alias, $nombre, $correo, $contrasena_hashed, $rol);
+        $stmt->bind_param("sssssss", $alias, $nombre, $correo, $contrasena_hashed, $rol, $rut, $fecha_nacimiento);
         $stmt->execute();
 
         header("Location: ../pages/registrotrabajador.php?mensaje=success");
@@ -34,5 +37,3 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $conexion->close();
     }
 }
-
-?>

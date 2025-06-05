@@ -7,6 +7,7 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "admin") {
 ?>
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,6 +18,7 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "admin") {
     <link rel="stylesheet" href="../css/registrotrabajador.css">
 
 </head>
+
 <body>
     <!-- Incluimos el sidebar completo -->
     <?php include 'sidebar.php'; ?>
@@ -28,9 +30,9 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "admin") {
                 <h1>Crear Nueva Cuenta</h1>
                 <p>Completa el formulario para registrarte</p>
             </div>
-            
+
             <form action="../php/registrar_usuario.php" method="POST" class="register-form" id="registerForm">
-                
+
                 <!-- Mostrar mensaje de error si existe -->
                 <?php if (isset($_GET['mensaje'])): ?>
                     <div class="form-group mensaje">
@@ -60,7 +62,7 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "admin") {
                         <input type="text" id="alias" name="alias" class="form-control" placeholder="Ingresa tu cargo" required>
                     </div>
                 </div>
-                
+
                 <!-- Resto de los campos -->
                 <div class="form-group">
                     <label for="nombre">Nombre Completo</label>
@@ -69,7 +71,23 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "admin") {
                         <input type="text" id="nombre" name="nombre" class="form-control" placeholder="Ingresa tu nombre completo" required>
                     </div>
                 </div>
-                
+
+                <div class="form-group">
+                    <label for="rut">RUT</label>
+                    <div class="input-field">
+                        <i class="fas fa-id-card left-icon"></i>
+                        <input type="text" id="rut" name="rut" class="form-control" placeholder="Ej: 12345678K">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="fecha_nacimiento">Fecha de Nacimiento</label>
+                    <div class="input-field">
+                        <i class="fas fa-calendar-alt left-icon"></i>
+                        <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" class="form-control">
+                    </div>
+                </div>
+
                 <div class="form-group">
                     <label for="email">Correo electrónico</label>
                     <div class="input-field">
@@ -77,7 +95,7 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "admin") {
                         <input type="email" id="email" name="correo_electronico" class="form-control" placeholder="tucorreo@ejemplo.com" required>
                     </div>
                 </div>
-                
+
                 <div class="form-group">
                     <label for="password">Contraseña</label>
                     <div class="input-field password-container">
@@ -88,7 +106,7 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "admin") {
                         </button>
                     </div>
                 </div>
-                
+
                 <div class="form-group">
                     <label for="rol">Rol de usuario</label>
                     <select id="rol" name="rol" class="form-control" required>
@@ -98,7 +116,7 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "admin") {
                         <option value="owner">Owner</option>
                     </select>
                 </div>
-                
+
                 <button type="submit" class="btn" id="registerBtn">Registrarse</button>
             </form>
         </div>
@@ -107,34 +125,35 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "admin") {
     <!-- Scripts -->
     <script src="../js/sidebaropen.js"></script>
     <script>
-            document.getElementById('togglePassword').addEventListener('click', function() {
-                const icon = this.querySelector('i');
-                const password = document.getElementById('password');
-                
-                // Cambiar el tipo de input
-                const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
-                password.setAttribute('type', type);
-                
-                // Cambiar el icono
-                icon.classList.toggle('fa-eye');
-                icon.classList.toggle('fa-eye-slash');
-                
-                // Cambiar el color
-                icon.style.color = type === 'text' ? '#1A1A1A' : '#5A5A5A';
-            });
+        document.getElementById('togglePassword').addEventListener('click', function() {
+            const icon = this.querySelector('i');
+            const password = document.getElementById('password');
 
-            // Animación de carga al enviar el formulario
-            document.getElementById('registerForm').addEventListener('submit', function(e) {
-                const btn = document.getElementById('registerBtn');
-                btn.classList.add('loading');
-                btn.disabled = true;
-                
-                // Simulamos un retraso para mostrar la animación (quitar en producción)
-                setTimeout(() => {
-                    btn.classList.remove('loading');
-                    btn.disabled = false;
-                }, 2000);
-            });
+            // Cambiar el tipo de input
+            const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+            password.setAttribute('type', type);
+
+            // Cambiar el icono
+            icon.classList.toggle('fa-eye');
+            icon.classList.toggle('fa-eye-slash');
+
+            // Cambiar el color
+            icon.style.color = type === 'text' ? '#1A1A1A' : '#5A5A5A';
+        });
+
+        // Animación de carga al enviar el formulario
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            const btn = document.getElementById('registerBtn');
+            btn.classList.add('loading');
+            btn.disabled = true;
+
+            // Simulamos un retraso para mostrar la animación (quitar en producción)
+            setTimeout(() => {
+                btn.classList.remove('loading');
+                btn.disabled = false;
+            }, 2000);
+        });
     </script>
 </body>
+
 </html>
