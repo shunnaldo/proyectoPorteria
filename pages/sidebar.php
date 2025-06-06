@@ -93,6 +93,11 @@ $conexion->close();
 
                     <span class="menu-text">Asignar owner</span>
                 </a>
+
+                <a href="listado_bloqueados.php" class="menu-item <?php echo isActive('listado_bloqueados.php', $current_page); ?>">
+                    <i class="fas fa-user-slash"></i>
+                    <span class="menu-text">Black List</span>
+                </a>
             </div>
 
             <a href="crear_porton.php" class="menu-item <?php echo isActive('crear_porton.php', $current_page); ?>">
@@ -109,6 +114,7 @@ $conexion->close();
                 <i class="fas fa-clipboard-list"></i>
                 <span class="menu-text">Registros</span>
             </a>
+
 
             <div class="menu-title">Configuración</div>
 
