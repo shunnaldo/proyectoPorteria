@@ -22,7 +22,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 "id" => $usuario["id"],
                 "alias" => $usuario["alias"],
                 "nombre" => $usuario["nombre"],
-                "rol" => $usuario["rol"]
+                "rol" => $usuario["rol"],
+                "correo_electronico" => $correo // este sí lo tenís arriba
             ];
 
             // Devolver respuesta según el rol
@@ -51,4 +52,3 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->close();
     $conexion->close();
 }
-?>

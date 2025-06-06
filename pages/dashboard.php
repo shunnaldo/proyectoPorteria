@@ -144,7 +144,7 @@ $porton_seleccionado = isset($_GET['porton_id']) ? intval($_GET['porton_id']) : 
                                             <tbody>
                                                 <?php echo getUltimosIngresos($conexion, $porton_seleccionado); ?>
                                             </tbody>
-                                        </table>
+                                        </table> 
                                     </div>
                                 </div>
                             </div>
