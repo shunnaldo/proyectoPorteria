@@ -7,6 +7,7 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "admin") {
 ?>
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -78,7 +79,8 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "admin") {
             box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.2);
         }
 
-        .bit-filter-btn, .bit-clear-btn {
+        .bit-filter-btn,
+        .bit-clear-btn {
             padding: 0.5rem 1rem;
             border: none;
             border-radius: var(--border-radius);
@@ -183,7 +185,8 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "admin") {
             min-width: 120px;
         }
 
-        .bit-loading, .bit-error {
+        .bit-loading,
+        .bit-error {
             padding: 2rem;
             text-align: center;
             color: var(--gray-color);
@@ -233,9 +236,17 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "admin") {
 
         /* Animación de carga */
         @keyframes pulse {
-            0% { opacity: 0.6; }
-            50% { opacity: 1; }
-            100% { opacity: 0.6; }
+            0% {
+                opacity: 0.6;
+            }
+
+            50% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0.6;
+            }
         }
 
         .bit-loading {
@@ -243,6 +254,7 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "admin") {
         }
     </style>
 </head>
+
 <body>
     <?php include 'sidebar.php'; ?>
 
@@ -259,7 +271,7 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "admin") {
                 </button>
             </div>
         </div>
-        
+
         <!-- Versión para desktop -->
         <div class="bit-table-container">
             <table class="bit-table">
@@ -276,6 +288,8 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "admin") {
                         <th>Portón</th>
                         <th>Estado</th>
                         <th>Portero</th>
+                        <th>Cargo</th>
+
                     </tr>
                 </thead>
                 <tbody id="tabla-bitacora">
@@ -285,7 +299,7 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "admin") {
                 </tbody>
             </table>
         </div>
-        
+
         <!-- Versión para móvil -->
         <div class="bit-card-container" id="bit-card-container">
             <div class="bit-loading">Cargando registros...</div>
@@ -299,7 +313,7 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "admin") {
             const tbody = document.getElementById("tabla-bitacora");
             const cardContainer = document.getElementById("bit-card-container");
             let bitacoraData = [];
-            
+
             // Configurar Flatpickr
             const datePicker = flatpickr("#bit-date-filter", {
                 locale: "es",
@@ -307,37 +321,37 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "admin") {
                 allowInput: true,
                 maxDate: "today"
             });
-            
+
             // Manejar filtrado
             document.getElementById('bit-filter-btn').addEventListener('click', function() {
                 const selectedDate = datePicker.selectedDates[0];
                 filterByDate(selectedDate);
             });
-            
+
             document.getElementById('bit-clear-filter').addEventListener('click', function() {
                 datePicker.clear();
                 filterByDate(null);
             });
-            
+
             function filterByDate(date) {
                 if (!date) {
                     renderData(bitacoraData);
                     return;
                 }
-                
+
                 const dateStr = date.toISOString().split('T')[0];
                 const filteredData = bitacoraData.filter(item => {
                     return item.fecha_hora && item.fecha_hora.startsWith(dateStr);
                 });
-                
+
                 renderData(filteredData);
             }
-            
+
             function renderData(data) {
                 // Limpiar contenedores
                 tbody.innerHTML = '';
                 cardContainer.innerHTML = '';
-                
+
                 if (data.length === 0) {
                     tbody.innerHTML = `
                         <tr>
@@ -347,7 +361,7 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "admin") {
                     cardContainer.innerHTML = '<div class="bit-card">No hay registros para mostrar</div>';
                     return;
                 }
-                
+
                 // Renderizar tabla
                 data.forEach(item => {
                     const row = document.createElement('tr');
@@ -363,10 +377,12 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "admin") {
                         <td>${item.porton_nombre || ''}</td>
                         <td class="status-${item.estado.toLowerCase()}">${item.estado || ''}</td>
                         <td>${item.nombre_portero || ''}</td>
+                        <td>${item.alias || ''}</td>
+
                     `;
                     tbody.appendChild(row);
                 });
-                
+
                 // Renderizar cards para móvil
                 data.forEach(item => {
                     const card = document.createElement('div');
@@ -420,7 +436,7 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "admin") {
                     cardContainer.appendChild(card);
                 });
             }
-            
+
             // Cargar datos iniciales
             fetch('../php/get_bitacora.php')
                 .then(response => response.json())
@@ -440,4 +456,5 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "admin") {
         });
     </script>
 </body>
+
 </html>

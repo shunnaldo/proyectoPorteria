@@ -24,10 +24,12 @@ $selectSql = "SELECT
                 p.medio_transporte,
                 p.patente,
                 port.nombre AS porton_nombre,
-                port.ubicacion
+                port.ubicacion,
+                u.alias
             FROM bitacora_ingresos bi
             INNER JOIN personas p ON bi.persona_id = p.id
             INNER JOIN portones port ON bi.porton_id = port.id
+            INNER JOIN usuarios u ON bi.usuario_id = u.id
             ORDER BY bi.fecha_hora DESC";
 
 $resultado = $conexion->query($selectSql);
