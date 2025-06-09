@@ -3,8 +3,8 @@ require_once '../php/conexion.php';
 
 session_start();
 if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "admin") {
-    header("Location: ../pages/logintrabajador.php");
-    exit;
+  header("Location: ../pages/logintrabajador.php");
+  exit;
 }
 
 $sql = "SELECT id, alias, nombre, correo_electronico, rol, rut, fecha_nacimiento FROM usuarios";
@@ -13,24 +13,25 @@ $resultado = $conexion->query($sql);
 $usuarios = [];
 
 if ($resultado && $resultado->num_rows > 0) {
-    while ($fila = $resultado->fetch_assoc()) {
-        // Calcular edad si tiene fecha de nacimiento
-        if (!empty($fila['fecha_nacimiento'])) {
-            $fechaNacimiento = new DateTime($fila['fecha_nacimiento']);
-            $hoy = new DateTime();
-            $edad = $hoy->diff($fechaNacimiento)->y;
-            $fila['edad'] = $edad;
-        } else {
-            $fila['edad'] = '—'; // No disponible
-        }
-
-        $usuarios[] = $fila;
+  while ($fila = $resultado->fetch_assoc()) {
+    // Calcular edad si tiene fecha de nacimiento
+    if (!empty($fila['fecha_nacimiento'])) {
+      $fechaNacimiento = new DateTime($fila['fecha_nacimiento']);
+      $hoy = new DateTime();
+      $edad = $hoy->diff($fechaNacimiento)->y;
+      $fila['edad'] = $edad;
+    } else {
+      $fila['edad'] = '—'; // No disponible
     }
+
+    $usuarios[] = $fila;
+  }
 }
 ?>
 
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -76,6 +77,7 @@ if ($resultado && $resultado->num_rows > 0) {
     }
   </style>
 </head>
+
 <body>
   <!-- Incluir el sidebar -->
   <?php include 'sidebar.php'; ?>
@@ -129,9 +131,9 @@ if ($resultado && $resultado->num_rows > 0) {
                     <a href="editar_usuario.php?id=<?= $usuario['id'] ?>" class="btn edit">
                       <i class="fas fa-edit"></i> Editar
                     </a>
-                    <a href="../php/eliminar_usuario.php?id=<?= $usuario['id'] ?>" 
-                       class="btn delete"
-                       onclick="return confirm('¿Estás seguro de eliminar este usuario?');">
+                    <a href="../php/eliminar_usuario.php?id=<?= $usuario['id'] ?>"
+                      class="btn delete"
+                      onclick="return confirm('¿Estás seguro de eliminar este usuario?');">
                       <i class="fas fa-trash-alt"></i> Eliminar
                     </a>
                   </td>
@@ -151,7 +153,7 @@ if ($resultado && $resultado->num_rows > 0) {
 
   <script src="../js/sidebar.js"></script>
   <script>
-    document.getElementById('filtroRol').addEventListener('change', function () {
+    document.getElementById('filtroRol').addEventListener('change', function() {
       const filtro = this.value;
       const filas = document.querySelectorAll('tbody tr');
 
@@ -171,4 +173,5 @@ if ($resultado && $resultado->num_rows > 0) {
     });
   </script>
 </body>
+
 </html>
