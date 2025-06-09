@@ -10,6 +10,7 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "owner") {
 
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,7 +18,7 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "owner") {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
-<style>
+    <style>
         :root {
             --primary-color: #4361ee;
             --secondary-color: #3f37c9;
@@ -82,7 +83,8 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "owner") {
             box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.2);
         }
 
-        .bit-filter-btn, .bit-clear-btn {
+        .bit-filter-btn,
+        .bit-clear-btn {
             padding: 0.5rem 1rem;
             border: none;
             border-radius: var(--border-radius);
@@ -187,7 +189,8 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "owner") {
             min-width: 120px;
         }
 
-        .bit-loading, .bit-error {
+        .bit-loading,
+        .bit-error {
             padding: 2rem;
             text-align: center;
             color: var(--gray-color);
@@ -205,6 +208,21 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "owner") {
         .status-finalizada {
             color: #6c757d;
             font-weight: 500;
+        }
+
+        #bit-patente-filter {
+            padding: 0.5rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 0.9rem;
+            min-width: 180px;
+            transition: var(--transition);
+        }
+
+        #bit-patente-filter:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.2);
         }
 
         @media (max-width: 768px) {
@@ -237,9 +255,17 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "owner") {
 
         /* Animación de carga */
         @keyframes pulse {
-            0% { opacity: 0.6; }
-            50% { opacity: 1; }
-            100% { opacity: 0.6; }
+            0% {
+                opacity: 0.6;
+            }
+
+            50% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0.6;
+            }
         }
 
         .bit-loading {
@@ -248,6 +274,7 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "owner") {
     </style>
 
 </head>
+
 <body>
     <?php include 'sidebarOwner.php'; ?>
 
@@ -256,16 +283,19 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "owner") {
             <h1 class="bit-title">Registro de Accesos - Mis Portones</h1>
             <div class="bit-filter">
                 <input type="text" id="bit-date-filter" placeholder="Seleccionar fecha">
+                <input type="text" id="bit-patente-filter" placeholder="Filtrar por patente">
+
                 <button id="bit-filter-btn" class="bit-filter-btn">
                     <i class="fas fa-filter"></i> Filtrar
                 </button>
                 <button id="bit-clear-filter" class="bit-clear-btn">
                     <i class="fas fa-times"></i>
                 </button>
+
             </div>
         </div>
-        
-         <!-- Versión para desktop -->
+
+        <!-- Versión para desktop -->
         <div class="bit-table-container">
             <table class="bit-table">
                 <thead>
@@ -318,7 +348,8 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "owner") {
             // Manejar filtrado
             document.getElementById('bit-filter-btn').addEventListener('click', function() {
                 const selectedDate = datePicker.selectedDates[0];
-                filterByDate(selectedDate);
+                const patente = document.getElementById('bit-patente-filter').value.trim().toLowerCase();
+                filterData(selectedDate, patente);
             });
 
             document.getElementById('bit-clear-filter').addEventListener('click', function() {
@@ -326,19 +357,21 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "owner") {
                 filterByDate(null);
             });
 
-            function filterByDate(date) {
-                if (!date) {
-                    renderData(bitacoraData);
-                    return;
+            function filterData(date, patente) {
+                let filteredData = bitacoraData;
+
+                if (date) {
+                    const dateStr = date.toISOString().split('T')[0];
+                    filteredData = filteredData.filter(item => item.fecha_hora && item.fecha_hora.startsWith(dateStr));
                 }
 
-                const dateStr = date.toISOString().split('T')[0];
-                const filteredData = bitacoraData.filter(item => {
-                    return item.fecha_hora && item.fecha_hora.startsWith(dateStr);
-                });
+                if (patente) {
+                    filteredData = filteredData.filter(item => (item.patente || '').toLowerCase().includes(patente));
+                }
 
                 renderData(filteredData);
             }
+
 
             function renderData(data) {
                 // Limpiar contenedores
@@ -431,7 +464,7 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "owner") {
             }
 
             // Cargar datos iniciales
-            fetch('../php/get_bitacora.php')
+            fetch('../php/get_bitacora_owner.php')
                 .then(response => response.json())
                 .then(data => {
                     bitacoraData = data;
