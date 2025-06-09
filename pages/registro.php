@@ -13,6 +13,7 @@ $rut_completo = $rut . $dv;
 
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <title>Registro de nueva persona</title>
@@ -20,6 +21,7 @@ $rut_completo = $rut . $dv;
 
     <link rel="stylesheet" href="../css/registro.css">
 </head>
+
 <body>
     <h2>Registro de nueva persona</h2>
 
@@ -53,6 +55,13 @@ $rut_completo = $rut . $dv;
             </select>
         </div>
 
+        <!-- Agrega este bloque dentro del <form>, donde quieras que aparezca -->
+        <div class="form-group">
+            <label for="fecha_nacimiento">Fecha de Nacimiento</label>
+            <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" required>
+        </div>
+
+
         <div class="form-group">
             <label for="direccion">Dirección</label>
             <input type="text" id="direccion" name="direccion" required>
@@ -78,45 +87,46 @@ $rut_completo = $rut . $dv;
     </form>
 
     <script>
-    function togglePatente() {
-        const medio = document.getElementById('medio_transporte').value;
-        const patenteDiv = document.getElementById('campo_patente');
-        const patenteInput = document.getElementById('patente');
+        function togglePatente() {
+            const medio = document.getElementById('medio_transporte').value;
+            const patenteDiv = document.getElementById('campo_patente');
+            const patenteInput = document.getElementById('patente');
 
-        if (medio === 'Auto') {
-            patenteDiv.style.display = 'block';
-            patenteInput.setAttribute('required', '');
-        } else {
-            patenteDiv.style.display = 'none';
-            patenteInput.removeAttribute('required');
+            if (medio === 'Auto') {
+                patenteDiv.style.display = 'block';
+                patenteInput.setAttribute('required', '');
+            } else {
+                patenteDiv.style.display = 'none';
+                patenteInput.removeAttribute('required');
+            }
         }
-    }
 
-    function validarFormulario() {
-        const medio = document.getElementById('medio_transporte').value;
-        const patente = document.getElementById('patente').value;
+        function validarFormulario() {
+            const medio = document.getElementById('medio_transporte').value;
+            const patente = document.getElementById('patente').value;
 
-        if (medio === 'Auto' && patente.trim() === '') {
-            alert('Por favor ingrese la patente del vehículo');
-            return false;
+            if (medio === 'Auto' && patente.trim() === '') {
+                alert('Por favor ingrese la patente del vehículo');
+                return false;
+            }
+            return true;
         }
-        return true;
-    }
 
-    // Insertar fecha y hora del navegador justo antes de enviar el formulario
-    document.querySelector('form').addEventListener('submit', () => {
-        const now = new Date();
+        // Insertar fecha y hora del navegador justo antes de enviar el formulario
+        document.querySelector('form').addEventListener('submit', () => {
+            const now = new Date();
 
-        const yyyy = now.getFullYear();
-        const mm = String(now.getMonth() + 1).padStart(2, '0');
-        const dd = String(now.getDate()).padStart(2, '0');
-        document.getElementById('fecha_ingreso').value = `${yyyy}-${mm}-${dd}`;
+            const yyyy = now.getFullYear();
+            const mm = String(now.getMonth() + 1).padStart(2, '0');
+            const dd = String(now.getDate()).padStart(2, '0');
+            document.getElementById('fecha_ingreso').value = `${yyyy}-${mm}-${dd}`;
 
-        const hh = String(now.getHours()).padStart(2, '0');
-        const min = String(now.getMinutes()).padStart(2, '0');
-        const ss = String(now.getSeconds()).padStart(2, '0');
-        document.getElementById('hora_ingreso').value = `${hh}:${min}:${ss}`;
-    });
+            const hh = String(now.getHours()).padStart(2, '0');
+            const min = String(now.getMinutes()).padStart(2, '0');
+            const ss = String(now.getSeconds()).padStart(2, '0');
+            document.getElementById('hora_ingreso').value = `${hh}:${min}:${ss}`;
+        });
     </script>
 </body>
+
 </html>

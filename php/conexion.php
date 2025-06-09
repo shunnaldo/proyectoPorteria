@@ -1,7 +1,7 @@
 <?php
 $host = "15.235.114.116"; 
 $usuario = "fomentol_practica";  
-$clave = "COFODEP2025**";         
+$clave = "CASAEMPRENDER2025**";         
 $base_de_datos = "fomentol_PORTONES"; 
 
 $conexion = new mysqli($host, $usuario, $clave, $base_de_datos);

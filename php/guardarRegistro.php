@@ -15,6 +15,7 @@ $rut = strtoupper($rut_completo);
 $nombre = $_POST['nombre'] ?? '';
 $apellido = $_POST['apellido'] ?? '';
 $genero = $_POST['genero'] ?? '';
+$fecha_nacimiento = $_POST['fecha_nacimiento'] ?? null;
 $direccion = $_POST['direccion'] ?? '';
 $medio_transporte = $_POST['medio_transporte'] ?? 'Otro';
 $patente = ($medio_transporte === 'Auto') ? ($_POST['patente'] ?? 'N/A') : 'N/A';
@@ -32,10 +33,10 @@ if (!$usuario_id || !$porton_id) {
 
 // Crear nueva persona
 $stmt_insert = $conexion->prepare("
-    INSERT INTO personas (rut, nombre, apellido, genero, direccion, medio_transporte, patente)
+    INSERT INTO personas (rut, nombre, apellido, genero, fecha_nacimiento, direccion, medio_transporte, patente)
     VALUES (?, ?, ?, ?, ?, ?, ?)
 ");
-$stmt_insert->bind_param("sssssss", $rut, $nombre, $apellido, $genero, $direccion, $medio_transporte, $patente);
+$stmt_insert->bind_param("sssssss", $rut, $nombre, $apellido, $genero, $fecha_nacimiento, $direccion, $medio_transporte, $patente);
 
 if (!$stmt_insert->execute()) {
     die("❌ Error al registrar nueva persona: " . $stmt_insert->error);
@@ -56,7 +57,7 @@ if ($stmt->execute()) {
     $query = "SELECT * FROM personas WHERE id = $persona_id";
     $result = $conexion->query($query);
     $persona = $result->fetch_assoc();
-    
+
     // HTML mejorado
     echo '<!DOCTYPE html>
     <html lang="es">
@@ -205,14 +206,14 @@ if ($stmt->execute()) {
                     <div class="info-label">Medio de Transporte:</div>
                     <div class="info-value">' . htmlspecialchars($persona['medio_transporte']) . '</div>
                 </div>';
-    
+
     if ($persona['medio_transporte'] === 'Auto') {
         echo '<div class="info-row">
                 <div class="info-label">Patente:</div>
                 <div class="info-value">' . htmlspecialchars($persona['patente']) . '</div>
               </div>';
     }
-    
+
     echo '      <div class="info-row">
                     <div class="info-label">Fecha y Hora:</div>
                     <div class="info-value">' . htmlspecialchars($fecha_hora) . '</div>
@@ -230,4 +231,3 @@ if ($stmt->execute()) {
 
 $stmt->close();
 $conexion->close();
-?>
