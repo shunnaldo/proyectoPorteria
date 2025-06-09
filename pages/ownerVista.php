@@ -265,6 +265,7 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "owner") {
             </div>
         </div>
         
+         <!-- Versión para desktop -->
         <div class="bit-table-container">
             <table class="bit-table">
                 <thead>
@@ -278,9 +279,10 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "owner") {
                         <th>Transporte</th>
                         <th>Patente</th>
                         <th>Portón</th>
-                        <th>Ubicación</th>
                         <th>Estado</th>
                         <th>Portero</th>
+                        <th>Cargo</th>
+
                     </tr>
                 </thead>
                 <tbody id="tabla-bitacora">
@@ -290,7 +292,8 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "owner") {
                 </tbody>
             </table>
         </div>
-        
+
+        <!-- Versión para móvil -->
         <div class="bit-card-container" id="bit-card-container">
             <div class="bit-loading">Cargando registros...</div>
         </div>
@@ -303,7 +306,7 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "owner") {
             const tbody = document.getElementById("tabla-bitacora");
             const cardContainer = document.getElementById("bit-card-container");
             let bitacoraData = [];
-            
+
             // Configurar Flatpickr
             const datePicker = flatpickr("#bit-date-filter", {
                 locale: "es",
@@ -311,37 +314,37 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "owner") {
                 allowInput: true,
                 maxDate: "today"
             });
-            
+
             // Manejar filtrado
             document.getElementById('bit-filter-btn').addEventListener('click', function() {
                 const selectedDate = datePicker.selectedDates[0];
                 filterByDate(selectedDate);
             });
-            
+
             document.getElementById('bit-clear-filter').addEventListener('click', function() {
                 datePicker.clear();
                 filterByDate(null);
             });
-            
+
             function filterByDate(date) {
                 if (!date) {
                     renderData(bitacoraData);
                     return;
                 }
-                
+
                 const dateStr = date.toISOString().split('T')[0];
                 const filteredData = bitacoraData.filter(item => {
-                    const itemDate = item.fecha.split('/').reverse().join('-');
-                    return itemDate === dateStr;
+                    return item.fecha_hora && item.fecha_hora.startsWith(dateStr);
                 });
-                
+
                 renderData(filteredData);
             }
-            
+
             function renderData(data) {
+                // Limpiar contenedores
                 tbody.innerHTML = '';
                 cardContainer.innerHTML = '';
-                
+
                 if (data.length === 0) {
                     tbody.innerHTML = `
                         <tr>
@@ -351,12 +354,12 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "owner") {
                     cardContainer.innerHTML = '<div class="bit-card">No hay registros para mostrar</div>';
                     return;
                 }
-                
+
                 // Renderizar tabla
                 data.forEach(item => {
                     const row = document.createElement('tr');
                     row.innerHTML = `
-                        <td>${item.rut_completo || item.rut || ''}</td>
+                        <td>${item.rut || ''}</td>
                         <td>${item.fecha || '--/--/----'}</td>
                         <td>${item.hora_ingreso || '--:--'}</td>
                         <td>${item.hora_salida || '--:--'}</td>
@@ -365,13 +368,14 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "owner") {
                         <td>${item.medio_transporte || ''}</td>
                         <td>${item.patente || 'N/A'}</td>
                         <td>${item.porton_nombre || ''}</td>
-                        <td>${item.ubicacion || ''}</td>
                         <td class="status-${item.estado.toLowerCase()}">${item.estado || ''}</td>
-                        <td>${item.usuario_nombre || item.usuario_alias || ''}</td>
+                        <td>${item.nombre_portero || ''}</td>
+                        <td>${item.alias || ''}</td>
+
                     `;
                     tbody.appendChild(row);
                 });
-                
+
                 // Renderizar cards para móvil
                 data.forEach(item => {
                     const card = document.createElement('div');
@@ -379,7 +383,7 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "owner") {
                     card.innerHTML = `
                         <div class="bit-card-row">
                             <span class="bit-card-label">RUT:</span>
-                            <span>${item.rut_completo || item.rut || ''}</span>
+                            <span>${item.rut || ''}</span>
                         </div>
                         <div class="bit-card-row">
                             <span class="bit-card-label">Fecha:</span>
@@ -389,25 +393,49 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "owner") {
                             <span class="bit-card-label">H. Ingreso:</span>
                             <span>${item.hora_ingreso || '--:--'}</span>
                         </div>
-                        <!-- ... (resto de campos igual) ... -->
+                        <div class="bit-card-row">
+                            <span class="bit-card-label">H. Salida:</span>
+                            <span>${item.hora_salida || '--:--'}</span>
+                        </div>
+                        <div class="bit-card-row">
+                            <span class="bit-card-label">Nombre:</span>
+                            <span>${item.persona_nombre || ''} ${item.persona_apellido || ''}</span>
+                        </div>
+                        <div class="bit-card-row">
+                            <span class="bit-card-label">Género:</span>
+                            <span>${item.genero || ''}</span>
+                        </div>
+                        <div class="bit-card-row">
+                            <span class="bit-card-label">Transporte:</span>
+                            <span>${item.medio_transporte || ''}</span>
+                        </div>
+                        <div class="bit-card-row">
+                            <span class="bit-card-label">Patente:</span>
+                            <span>${item.patente || 'N/A'}</span>
+                        </div>
+                        <div class="bit-card-row">
+                            <span class="bit-card-label">Portón:</span>
+                            <span>${item.porton_nombre || ''}</span>
+                        </div>
+                        <div class="bit-card-row">
+                            <span class="bit-card-label">Estado:</span>
+                            <span class="status-${item.estado.toLowerCase()}">${item.estado || ''}</span>
+                        </div>
+                        <div class="bit-card-row">
+                            <span class="bit-card-label">Portero:</span>
+                            <span>${item.nombre_portero || ''}</span>
+                        </div>
                     `;
                     cardContainer.appendChild(card);
                 });
             }
-            
+
             // Cargar datos iniciales
-            fetch('../php/get_bitacora_owner.php')
-                .then(response => {
-                    if (!response.ok) throw new Error('Error al cargar los datos');
-                    return response.json();
-                })
+            fetch('../php/get_bitacora.php')
+                .then(response => response.json())
                 .then(data => {
                     bitacoraData = data;
                     renderData(data);
-                    
-                    // Mostrar portones asignados en consola para debug
-                    const portonesUnicos = [...new Set(data.map(item => item.porton_nombre))];
-                    console.log('Portones asignados:', portonesUnicos);
                 })
                 .catch(error => {
                     console.error('Error:', error);
@@ -421,4 +449,5 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "owner") {
         });
     </script>
 </body>
+
 </html>

@@ -55,7 +55,6 @@ $sql = "
         p.genero,
         p.medio_transporte,
         p.patente,
-        p.hora_ingreso,
         u.nombre AS usuario_nombre,
         u.alias AS usuario_alias,
         port.nombre AS porton_nombre,
@@ -76,7 +75,7 @@ $result = $stmt->get_result();
 
 $datos = [];
 while ($fila = $result->fetch_assoc()) {
-    // Formatear datos igual que en admin
+    // Formatear datos
     $fila['fecha'] = date('d/m/Y', strtotime($fila['fecha']));
     $fila['hora_ingreso'] = !empty($fila['hora_ingreso']) ? date('H:i', strtotime($fila['hora_ingreso'])) : $fila['hora_registro'];
     $fila['hora_salida'] = !empty($fila['hora_salida']) ? date('H:i', strtotime($fila['hora_salida'])) : '--:--';
