@@ -23,6 +23,7 @@ $fecha = $_POST['fecha_ingreso'];
 $hora = $_POST['hora_ingreso'];
 $fecha_hora = "$fecha $hora";
 
+
 // Datos del usuario y portón desde sesión
 $usuario_id = $_SESSION["usuario"]["id"] ?? null;
 $porton_id = $_SESSION["porton_id"] ?? null;
@@ -31,12 +32,23 @@ if (!$usuario_id || !$porton_id) {
     die("❌ Error: sesión expirada o datos del usuario/portón no disponibles.");
 }
 
+// Obtener nombre del portero
+$stmt_portero = $conexion->prepare("SELECT nombre FROM usuarios WHERE id = ?");
+$stmt_portero->bind_param("i", $usuario_id);
+$stmt_portero->execute();
+$stmt_portero->bind_result($nombre_portero);
+$stmt_portero->fetch();
+$stmt_portero->close();
+
+if (!$nombre_portero) {
+    die("❌ No se encontró el nombre del portero.");
+}
 // Crear nueva persona
 $stmt_insert = $conexion->prepare("
     INSERT INTO personas (rut, nombre, apellido, genero, fecha_nacimiento, direccion, medio_transporte, patente)
-    VALUES (?, ?, ?, ?, ?, ?, ?)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
 ");
-$stmt_insert->bind_param("sssssss", $rut, $nombre, $apellido, $genero, $fecha_nacimiento, $direccion, $medio_transporte, $patente);
+$stmt_insert->bind_param("ssssssss", $rut, $nombre, $apellido, $genero, $fecha_nacimiento, $direccion, $medio_transporte, $patente);
 
 if (!$stmt_insert->execute()) {
     die("❌ Error al registrar nueva persona: " . $stmt_insert->error);
@@ -47,10 +59,11 @@ $stmt_insert->close();
 
 // Insertar en la bitácora
 $stmt = $conexion->prepare("
-    INSERT INTO bitacora_ingresos (persona_id, usuario_id, porton_id, fecha_hora)
-    VALUES (?, ?, ?, ?)
+    INSERT INTO bitacora_ingresos (persona_id, usuario_id, nombre_portero, porton_id, fecha_hora)
+    VALUES (?, ?, ?, ?, ?)
 ");
-$stmt->bind_param("iiis", $persona_id, $usuario_id, $porton_id, $fecha_hora);
+$stmt->bind_param("iisis", $persona_id, $usuario_id, $nombre_portero, $porton_id, $fecha_hora);
+
 
 if ($stmt->execute()) {
     // Obtener los datos completos de la persona

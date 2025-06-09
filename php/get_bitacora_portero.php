@@ -55,7 +55,6 @@ $sql = "
         p.genero,
         p.medio_transporte,
         p.patente,
-        p.hora_ingreso,
         u.nombre AS usuario_nombre,
         u.alias AS usuario_alias,
         port.nombre AS porton_nombre,

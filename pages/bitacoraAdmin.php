@@ -362,7 +362,7 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "admin") {
                         <td>${item.patente || 'N/A'}</td>
                         <td>${item.porton_nombre || ''}</td>
                         <td class="status-${item.estado.toLowerCase()}">${item.estado || ''}</td>
-                        <td>${item.usuario_nombre || ''}</td>
+                        <td>${item.nombre_portero || ''}</td>
                     `;
                     tbody.appendChild(row);
                 });
@@ -414,7 +414,7 @@ if (!isset($_SESSION["usuario"]) || $_SESSION["usuario"]["rol"] !== "admin") {
                         </div>
                         <div class="bit-card-row">
                             <span class="bit-card-label">Portero:</span>
-                            <span>${item.usuario_nombre || ''}</span>
+                            <span>${item.nombre_portero || ''}</span>
                         </div>
                     `;
                     cardContainer.appendChild(card);
