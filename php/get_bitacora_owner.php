@@ -34,7 +34,7 @@ $conexion->query("
     SET opciones = 'expirada' 
     WHERE opciones = 'ingresada' 
     AND fecha_hora < DATE_SUB(NOW(), INTERVAL 24 HOUR)
-    AND porton_id IN (".implode(',', $portonesIds).")
+    AND porton_id IN (" . implode(',', $portonesIds) . ")
 ");
 
 // Consulta principal para obtener los registros
@@ -48,6 +48,7 @@ $sql = "
         TIME(bi.fecha_hora) as hora_registro,
         bi.hora_salida,
         bi.opciones as estado,
+        bi.nombre_portero,
         p.rut,
         p.rut_completo,
         p.nombre AS persona_nombre,
@@ -55,6 +56,7 @@ $sql = "
         p.genero,
         p.medio_transporte,
         p.patente,
+        p.fecha_nacimiento,
         u.nombre AS usuario_nombre,
         u.alias AS usuario_alias,
         port.nombre AS porton_nombre,

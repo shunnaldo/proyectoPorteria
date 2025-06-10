@@ -1,0 +1,331 @@
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --gray-color: #6c757d;
+            --success-color: #4bb543;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fb;
+            color: var(--dark-color);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        .bit-container {
+            margin-left: 250px;
+            padding: 2rem;
+            transition: var(--transition);
+        }
+
+        .bit-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .bit-title {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            margin: 0;
+            font-weight: 600;
+        }
+
+        .bit-filter {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        #bit-date-filter {
+            padding: 0.5rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 0.9rem;
+            min-width: 150px;
+            transition: var(--transition);
+        }
+
+        #bit-date-filter:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.2);
+        }
+
+        .bit-filter-btn,
+        .bit-clear-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        .bit-filter-btn {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .bit-filter-btn:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-1px);
+        }
+
+        .bit-clear-btn {
+            background-color: var(--gray-color);
+            color: white;
+            padding: 0.5rem;
+        }
+
+        .bit-clear-btn:hover {
+            background-color: #5a6268;
+        }
+
+        .bit-table-container {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            overflow-x: auto;
+            margin-bottom: 2rem;
+        }
+
+        .bit-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1000px;
+        }
+
+        .bit-table th {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 500;
+            position: sticky;
+            top: 0;
+        }
+
+        .bit-table td {
+            padding: 0.8rem;
+            border-bottom: 1px solid #eee;
+            white-space: nowrap;
+        }
+
+        .bit-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .bit-table tr:hover td {
+            background-color: #f8f9fa;
+        }
+
+        .bit-card-container {
+            display: none;
+            gap: 1rem;
+            flex-direction: column;
+        }
+
+        .bit-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 1.5rem;
+            transition: var(--transition);
+        }
+
+        .bit-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .bit-card-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .bit-card-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .bit-card-label {
+            font-weight: 600;
+            color: var(--primary-color);
+            min-width: 120px;
+        }
+
+        .bit-loading,
+        .bit-error {
+            padding: 2rem;
+            text-align: center;
+            color: var(--gray-color);
+        }
+
+        .bit-error {
+            color: #dc3545;
+        }
+
+        .status-ingresada {
+            color: #28a745;
+            font-weight: 500;
+        }
+
+        .status-finalizada {
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        #bit-patente-filter {
+            padding: 0.5rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 0.9rem;
+            min-width: 180px;
+            transition: var(--transition);
+        }
+
+        #bit-patente-filter:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .bit-container {
+                margin-left: 0;
+                padding: 1rem;
+            }
+
+            .bit-table-container {
+                display: none;
+            }
+
+            .bit-card-container {
+                display: flex;
+            }
+
+            .bit-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .bit-filter {
+                width: 100%;
+            }
+
+            #bit-date-filter {
+                flex-grow: 1;
+            }
+        }
+
+        /* Animación de carga */
+        @keyframes pulse {
+            0% {
+                opacity: 0.6;
+            }
+
+            50% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0.6;
+            }
+        }
+
+        .bit-loading {
+            animation: pulse 1.5s infinite;
+        }
+
+        /* Estilos para el botón de Excel */
+        .bit-excel-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            background-color: #1d6f42;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .bit-excel-btn:hover {
+            background-color: #165834;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .bit-excel-btn::after {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -60%;
+            width: 200%;
+            height: 200%;
+            background: rgba(255, 255, 255, 0.1);
+            transform: rotate(30deg);
+            transition: all 0.3s;
+        }
+
+        .bit-excel-btn:hover::after {
+            left: 100%;
+        }
+
+        /* Tooltip para el botón */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 120px;
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -60px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.8rem;
+        }
+
+        .tooltip .tooltiptext::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #555 transparent transparent transparent;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
