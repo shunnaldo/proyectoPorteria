@@ -1,12 +1,15 @@
 <?php
 require 'conexion.php';
 
-// Limpiar el RUT recibido (eliminar puntos, guión y espacios)
+// Limpiar el RUT recibido
 $rut = strtoupper(str_replace(['.', '-', ' '], '', trim($_POST['rut'])));
 $porton_id = intval($_POST['porton_id']);
 $motivo = $_POST['motivo'] ?? 'Sin especificar';
+$nombre = trim($_POST['nombre'] ?? '');
+$genero = $_POST['genero'] ?? '';
+$fecha_nacimiento = $_POST['fecha_nacimiento'] ?? null;
 
-// Validar formato de RUT (opcional pero recomendado)
+// Validar formato de RUT
 if (!preg_match('/^[0-9]+[0-9kK]{1}$/', $rut)) {
     die("❌ Formato de RUT inválido");
 }
@@ -21,12 +24,14 @@ if ($ver_result->num_rows > 0) {
     die("⚠️ Esta persona ya está bloqueada en ese portón.");
 }
 
-// Insertar bloqueo con RUT limpio
-$stmt = $conexion->prepare("INSERT INTO blacklist (rut, porton_id, motivo) VALUES (?, ?, ?)");
-$stmt->bind_param("sis", $rut, $porton_id, $motivo);
+// Insertar datos completos
+$stmt = $conexion->prepare("INSERT INTO blacklist (rut, porton_id, motivo, nombre, genero, fecha_nacimiento) VALUES (?, ?, ?, ?, ?, ?)");
+$stmt->bind_param("sissss", $rut, $porton_id, $motivo, $nombre, $genero, $fecha_nacimiento);
+
 
 if ($stmt->execute()) {
-    echo "✅ Bloqueo guardado correctamente.";
+    header("Location: ../pages/listado_bloqueados.php?success=1");
 } else {
-    echo "❌ Error al bloquear: " . $conexion->error;
+    header("Location: ../pages/listado_bloqueados.php?error=db_error");
 }
+exit;

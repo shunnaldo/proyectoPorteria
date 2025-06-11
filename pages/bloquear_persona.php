@@ -19,79 +19,7 @@ $portones = $conexion->query("SELECT id, nombre FROM portones");
     <!-- Google Fonts - Material Icons -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-    <!-- Custom CSS -->
-    <style>
-        body {
-            background-color: #ffffff;
-            color: #212529;
-            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-        }
-
-        .card {
-            border: none;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
-        }
-
-        .form-control,
-        .form-select {
-            border: 1px solid #e0e0e0;
-            border-radius: 6px;
-            padding: 12px 15px;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .form-control:focus,
-        .form-select:focus {
-            border-color: #212529;
-            box-shadow: 0 0 0 2px rgba(33, 37, 41, 0.1);
-        }
-
-        .btn-custom {
-            background-color: #212529;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            padding: 12px 24px;
-            font-weight: 500;
-            letter-spacing: 0.5px;
-            transition: all 0.3s ease;
-        }
-
-        .btn-custom:hover {
-            background-color: #343a40;
-            transform: translateY(-1px);
-        }
-
-        .header-icon {
-            font-size: 2.5rem;
-            color: #212529;
-            margin-bottom: 1rem;
-        }
-
-        .form-label {
-            font-weight: 500;
-            margin-bottom: 8px;
-            color: #495057;
-        }
-
-        .material-icons {
-            vertical-align: middle;
-            color: #212529;
-        }
-
-        .divider {
-            height: 1px;
-            background-color: #e9ecef;
-            margin: 24px 0;
-        }
-    </style>
+    <link rel="stylesheet" href="../css/bloquear_persona.css">
 </head>
 
 <body>
@@ -110,6 +38,7 @@ $portones = $conexion->query("SELECT id, nombre FROM portones");
                     </div>
 
                     <form method="POST" action="../php/guardar_bloqueo.php" onsubmit="return cleanRutBeforeSubmit()">
+
                         <div class="mb-4">
                             <label for="rut" class="form-label">
                                 <i class="material-icons me-2">fingerprint</i>
@@ -117,6 +46,36 @@ $portones = $conexion->query("SELECT id, nombre FROM portones");
                             </label>
                             <input type="text" class="form-control" id="rut" name="rut" required
                                 placeholder="Ej: 12345678-K">
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="nombre" class="form-label">
+                                <i class="material-icons me-2">person</i>
+                                Nombre completo
+                            </label>
+                            <input type="text" class="form-control" id="nombre" name="nombre" required placeholder="Ej: Ana González">
+                        </div>
+
+
+                        <div class="mb-4">
+                            <label for="genero" class="form-label">
+                                <i class="material-icons me-2">wc</i>
+                                Género
+                            </label>
+                            <select class="form-select" id="genero" name="genero" required>
+                                <option value="" selected disabled>Selecciona un género</option>
+                                <option value="Masculino">Masculino</option>
+                                <option value="Femenino">Femenino</option>
+                                <option value="Otro">Otro</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="fecha_nacimiento" class="form-label">
+                                <i class="material-icons me-2">calendar_today</i>
+                                Fecha de nacimiento
+                            </label>
+                            <input type="date" class="form-control" id="fecha_nacimiento" name="fecha_nacimiento" required>
                         </div>
 
                         <div class="mb-4">
