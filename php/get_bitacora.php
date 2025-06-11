@@ -23,6 +23,7 @@ $selectSql = "SELECT
                 p.direccion,
                 p.medio_transporte,
                 p.patente,
+                p.fecha_nacimiento,
                 port.nombre AS porton_nombre,
                 port.ubicacion,
                 u.alias
@@ -36,7 +37,7 @@ $resultado = $conexion->query($selectSql);
 $datos = [];
 
 if ($resultado->num_rows > 0) {
-    while($fila = $resultado->fetch_assoc()) {
+    while ($fila = $resultado->fetch_assoc()) {
         $fechaHora = explode(' ', $fila['fecha_hora']);
         $fila['fecha'] = date('d/m/Y', strtotime($fechaHora[0]));
         $fila['hora_registro'] = $fechaHora[1] ?? '--:--';
@@ -44,6 +45,21 @@ if ($resultado->num_rows > 0) {
         $fila['hora_salida'] = $fila['hora_salida'] ? date('H:i', strtotime($fila['hora_salida'])) : '--:--';
         $fila['medio_transporte'] = $fila['medio_transporte'] === 'Auto' ? 'Auto' : 'A pie';
         $fila['estado'] = ucfirst($fila['estado']);
+        
+        // Calcular la edad
+        if (!empty($fila['fecha_nacimiento'])) {
+            $fechaNac = new DateTime($fila['fecha_nacimiento']);
+            $hoy = new DateTime();
+            $edad = $hoy->diff($fechaNac)->y;
+            $fila['edad'] = $edad;
+        } else {
+            $fila['edad'] = 'N/A';
+        }
+        
+        // Formatear fecha de nacimiento para mostrar
+        $fila['fecha_nacimiento_formatted'] = !empty($fila['fecha_nacimiento']) ? 
+            date('d/m/Y', strtotime($fila['fecha_nacimiento'])) : '--/--/----';
+            
         $datos[] = $fila;
     }
 }
