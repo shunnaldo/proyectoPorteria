@@ -136,8 +136,15 @@ if ($resultado && $fila = $resultado->fetch_assoc()) {
 
         <main class="main-content">
             <header class="dashboard-header">
-                <h1><i class="fas fa-tachometer-alt me-2"></i>Resumen Estadístico</h1>
-                <p class="text-muted">Datos clave del sistema</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h1><i class="fas fa-tachometer-alt me-2"></i>Resumen Estadístico</h1>
+                        <p class="text-muted">Datos clave del sistema</p>
+                    </div>
+                    <a href="historial.php" class="btn btn-outline-primary">
+                        <i class="fas fa-history me-2"></i>Historial
+                    </a>
+                </div>
             </header>
 
             <div class="stats-grid">

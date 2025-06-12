@@ -12,7 +12,19 @@ if (!isset($_GET['id']) || empty($_GET['id'])) {
     die("ID de usuario no especificado.");
 }
 
-$id = intval($_GET['id']);
+$id = intval($_GET['id']); // Asegurarse de que el ID sea un número entero
+
+// Consultar datos actuales del usuario
+$stmt = $conexion->prepare("SELECT alias, nombre, correo_electronico, rut, fecha_nacimiento, rol FROM usuarios WHERE id=?");
+$stmt->bind_param("i", $id);
+$stmt->execute();
+$result = $stmt->get_result();
+
+if ($result->num_rows === 0) {
+    die("Usuario no encontrado.");
+}
+
+$usuario = $result->fetch_assoc();
 
 // Manejar envío del formulario
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -43,6 +55,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         
         if ($stmt->execute()) {
+            // Registrar el cambio en la tabla historial_cambios
+            $usuario_id = $_SESSION["usuario"]["id"];  // El ID del admin que está realizando la actualización
+            $accion = 'actualización';
+            $tabla_afectada = 'usuarios';
+            $descripcion = "Se actualizó el usuario con ID $id, alias: $alias, nombre: $nombre.";
+
+            $stmt_historial = $conexion->prepare("INSERT INTO historial_cambios (usuario_id, accion, tabla_afectada, registro_id, descripcion, fecha) 
+                                                  VALUES (?, ?, ?, ?, ?, NOW())");
+            $stmt_historial->bind_param("issis", $usuario_id, $accion, $tabla_afectada, $id, $descripcion);
+            $stmt_historial->execute();
+
             header("Location: ver_usuarios.php?msg=Usuario actualizado correctamente");
             exit;
         } else {
@@ -51,15 +74,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Consultar datos actuales del usuario
-$stmt = $conexion->prepare("SELECT alias, nombre, correo_electronico, rut, fecha_nacimiento, rol FROM usuarios WHERE id=?");
-$stmt->bind_param("i", $id);
-$stmt->execute();
-$result = $stmt->get_result();
-if ($result->num_rows === 0) {
-    die("Usuario no encontrado.");
-}
-$usuario = $result->fetch_assoc();
 ?>
 
 <!DOCTYPE html>
