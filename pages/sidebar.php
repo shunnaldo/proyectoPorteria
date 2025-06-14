@@ -84,10 +84,17 @@ $conexion->close();
                     <i class="fas fa-circle-notch"></i>
                     <span class="menu-text">Todos los usuarios</span>
                 </a>
+
                 <a href="registrotrabajador.php" class="menu-item <?php echo isActive('registrotrabajador.php', $current_page); ?>">
                     <i class="fas fa-user-plus"></i>
                     <span class="menu-text">Agregar nuevo</span>
                 </a>
+
+                <a href="personas_Qr.php" class="menu-item <?php echo isActive('personas_Qr.php', $current_page); ?>">
+                    <i class="fas fa-address-card"></i>
+                    <span class="menu-text">Añadir Persona</span>
+                </a>
+
                 <a href="ownerPortones.php" class="menu-item <?php echo isActive('ownerPortones.php', $current_page); ?>">
                     <i class="fas fa-user-tag"></i>
 
@@ -98,6 +105,7 @@ $conexion->close();
                     <i class="fas fa-user-slash"></i>
                     <span class="menu-text">Black List</span>
                 </a>
+
             </div>
 
             <a href="crear_porton.php" class="menu-item <?php echo isActive('crear_porton.php', $current_page); ?>">
