@@ -9,57 +9,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        body {
-            background-color: #f8f9fa;
-        }
-        .card {
-            border: none;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .table-responsive {
-            border-radius: 10px;
-            overflow: hidden;
-        }
-        .table {
-            margin-bottom: 0;
-        }
-        .table thead th {
-            background-color: #212529;
-            color: white;
-            border-bottom: none;
-        }
-        .table tbody tr:hover {
-            background-color: rgba(33, 37, 41, 0.05);
-        }
-        .btn-outline-dark {
-            border-color: #212529;
-            color: #212529;
-        }
-        .btn-outline-dark:hover {
-            background-color: #212529;
-            color: white;
-        }
-        .modal-content {
-            border: none;
-            border-radius: 10px;
-        }
-        .modal-header {
-            background-color: #212529;
-            color: white;
-            border-top-left-radius: 10px;
-            border-top-right-radius: 10px;
-        }
-        .btn-close {
-            filter: invert(1);
-        }
-        .section-title {
-            border-bottom: 2px solid #212529;
-            padding-bottom: 8px;
-            margin-bottom: 20px;
-        }
-    </style>
+    <link rel="stylesheet" href="../css/personaqr-list">
 </head>
 
 <body>
@@ -67,10 +17,17 @@
         <div class="row">
             <!-- Sidebar -->
             <?php include 'sidebar.php'; ?>
-            
+
+
             <!-- Main Content -->
             <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
+
+                    <?php
+                    if (isset($_GET['success']) && $_GET['success'] == 1) {
+                        echo '<div class="alert alert-success">QR eliminado con éxito.</div>';
+                    }
+                    ?>
                     <h1 class="h2">
                         <i class="fas fa-users me-2"></i>Listado de Personas
                     </h1>
@@ -80,16 +37,17 @@
                         </a>
                     </div>
                 </div>
-                
+
                 <div class="card p-4 mb-4">
                     <h4 class="section-title"><i class="fas fa-list me-2"></i>Personas Registradas</h4>
-                    
+
                     <?php
                     // Incluir el archivo de conexión a la base de datos
                     require '../php/conexion.php';
 
                     // Función para calcular la edad
-                    function calcularEdad($fecha_nacimiento) {
+                    function calcularEdad($fecha_nacimiento)
+                    {
                         $fecha_actual = new DateTime();
                         $fecha_nac = new DateTime($fecha_nacimiento);
                         $edad = $fecha_actual->diff($fecha_nac);
@@ -108,40 +66,50 @@
 
                     if ($result->num_rows > 0) {
                     ?>
-                    <div class="table-responsive">
-                        <table class="table table-hover align-middle">
-                            <thead>
-                                <tr>
-                                    <th><i class="fas fa-id-card me-1"></i> RUT</th>
-                                    <th><i class="fas fa-user me-1"></i> Nombre</th>
-                                    <th><i class="fas fa-calendar-alt me-1"></i> Edad</th>
-                                    <th class="text-center"><i class="fas fa-qrcode me-1"></i> Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php
-                                while ($row = $result->fetch_assoc()) {
-                                    $edad = calcularEdad($row['fecha_nacimiento']);
-                                    $qrCodePath = '../php/qr_codes/' . basename($row['qr_code']);
-                                ?>
-                                <tr>
-                                    <td><?php echo htmlspecialchars($row['rut']); ?></td>
-                                    <td><?php echo htmlspecialchars($row['nombre']) . ' ' . htmlspecialchars($row['apellido']); ?></td>
-                                    <td><?php echo $edad; ?> años</td>
-                                    <td class="text-center">
-                                        <button class="btn btn-sm btn-outline-dark" 
-                                                onclick="verQR('<?php echo htmlspecialchars($qrCodePath); ?>', <?php echo $row['persona_id']; ?>)"
-                                                data-bs-toggle="tooltip" 
-                                                data-bs-placement="top" 
-                                                title="Ver QR">
-                                            <i class="fas fa-qrcode"></i> Ver QR
-                                        </button>
-                                    </td>
-                                </tr>
-                                <?php } ?>
-                            </tbody>
-                        </table>
-                    </div>
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead>
+                                    <tr>
+                                        <th><i class="fas fa-id-card me-1"></i> RUT</th>
+                                        <th><i class="fas fa-user me-1"></i> Nombre</th>
+                                        <th><i class="fas fa-calendar-alt me-1"></i> Edad</th>
+                                        <th class="text-center"><i class="fas fa-qrcode me-1"></i> Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php
+                                    while ($row = $result->fetch_assoc()) {
+                                        $edad = calcularEdad($row['fecha_nacimiento']);
+                                        $qrCodePath = '../php/qr_codes/' . basename($row['qr_code']);
+                                    ?>
+                                        <tr>
+                                            <td><?php echo htmlspecialchars($row['rut']); ?></td>
+                                            <td><?php echo htmlspecialchars($row['nombre']) . ' ' . htmlspecialchars($row['apellido']); ?></td>
+                                            <td><?php echo $edad; ?> años</td>
+                                            <td class="text-center">
+                                                <button class="btn btn-sm btn-outline-dark"
+                                                    onclick="verQR('<?php echo htmlspecialchars($qrCodePath); ?>', <?php echo $row['persona_id']; ?>)"
+                                                    data-bs-toggle="tooltip"
+                                                    data-bs-placement="top"
+                                                    title="Ver QR">
+                                                    <i class="fas fa-qrcode"></i> Ver QR
+                                                </button>
+                                            
+                                            
+                                                <button class="btn btn-sm btn-outline-danger"
+                                                    onclick="eliminarQR(<?php echo $row['persona_id']; ?>)"
+                                                    data-bs-toggle="tooltip"
+                                                    data-bs-placement="top"
+                                                    title="Eliminar QR">
+                                                    <i class="fas fa-trash"></i> Eliminar QR
+                                                </button>
+                                            </td>
+
+                                        </tr>
+                                    <?php } ?>
+                                </tbody>
+                            </table>
+                        </div>
                     <?php
                     } else {
                         echo '<div class="alert alert-info">No se encontraron personas registradas.</div>';
@@ -186,7 +154,7 @@
             document.getElementById('qrImage').src = qrPath;
             document.getElementById('downloadQR').href = qrPath;
             document.getElementById('downloadQR').download = 'qr_persona_' + personaId + '.png';
-            
+
             // Mostrar el modal
             var qrModal = new bootstrap.Modal(document.getElementById('qrModal'));
             qrModal.show();
@@ -195,10 +163,18 @@
         // Inicializar tooltips
         document.addEventListener('DOMContentLoaded', function() {
             var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-            tooltipTriggerList.map(function (tooltipTriggerEl) {
+            tooltipTriggerList.map(function(tooltipTriggerEl) {
                 return new bootstrap.Tooltip(tooltipTriggerEl);
             });
         });
+    </script>
+    <script>
+        function eliminarQR(personaId) {
+            if (confirm("¿Estás seguro de que deseas eliminar el QR de esta persona?")) {
+                // Redirigir a la URL de eliminación pasando el ID de la persona
+                window.location.href = '../php/eliminarqr_persona?id_persona=' + personaId;
+            }
+        }
     </script>
 </body>
 

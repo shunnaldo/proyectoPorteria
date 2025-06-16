@@ -1,0 +1,49 @@
+        body {
+            background-color: #f8f9fa;
+        }
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .table-responsive {
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .table {
+            margin-bottom: 0;
+        }
+        .table thead th {
+            background-color: #212529;
+            color: white;
+            border-bottom: none;
+        }
+        .table tbody tr:hover {
+            background-color: rgba(33, 37, 41, 0.05);
+        }
+        .btn-outline-dark {
+            border-color: #212529;
+            color: #212529;
+        }
+        .btn-outline-dark:hover {
+            background-color: #212529;
+            color: white;
+        }
+        .modal-content {
+            border: none;
+            border-radius: 10px;
+        }
+        .modal-header {
+            background-color: #212529;
+            color: white;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+        .btn-close {
+            filter: invert(1);
+        }
+        .section-title {
+            border-bottom: 2px solid #212529;
+            padding-bottom: 8px;
+            margin-bottom: 20px;
+        }

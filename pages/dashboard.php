@@ -50,9 +50,12 @@ $resultado = $conexion->query($sql);
 
 $edad_promedio = 0;
 
+$edad_promedio = 0;
 if ($resultado && $fila = $resultado->fetch_assoc()) {
-    $edad_promedio = round($fila['edad_promedio'], 1);
+    // Verifica si el valor no es NULL y si es numérico
+    $edad_promedio = isset($fila['edad_promedio']) && is_numeric($fila['edad_promedio']) ? round($fila['edad_promedio'], 1) : 0;
 }
+
 
 // Conteo total de registros en la tabla blacklist
 $sql = "SELECT COUNT(*) AS total_bloqueados FROM blacklist";
