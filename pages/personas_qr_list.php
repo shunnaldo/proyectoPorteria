@@ -28,6 +28,13 @@
                         echo '<div class="alert alert-success">QR eliminado con éxito.</div>';
                     }
                     ?>
+                    <?php
+                    if (isset($_GET['success_edit_rut']) && $_GET['success_edit_rut'] == 1) {
+                        echo '<div class="alert alert-success">RUT editado con éxito.</div>';
+                    }
+                    ?>
+
+
                     <h1 class="h2">
                         <i class="fas fa-users me-2"></i>Listado de Personas
                     </h1>
@@ -94,8 +101,8 @@
                                                     title="Ver QR">
                                                     <i class="fas fa-qrcode"></i> Ver QR
                                                 </button>
-                                            
-                                            
+
+
                                                 <button class="btn btn-sm btn-outline-danger"
                                                     onclick="eliminarQR(<?php echo $row['persona_id']; ?>)"
                                                     data-bs-toggle="tooltip"
@@ -103,6 +110,16 @@
                                                     title="Eliminar QR">
                                                     <i class="fas fa-trash"></i> Eliminar QR
                                                 </button>
+
+                                                <button class="btn btn-sm btn-outline-warning"
+                                                    onclick="editarRut(<?php echo $row['persona_id']; ?>, '<?php echo htmlspecialchars($row['rut']); ?>')"
+                                                    data-bs-toggle="tooltip"
+                                                    data-bs-placement="top"
+                                                    title="Editar RUT">
+                                                    <i class="fas fa-edit"></i> Editar RUT
+                                                </button>
+
+
                                             </td>
 
                                         </tr>
@@ -121,21 +138,55 @@
         </div>
     </div>
 
-    <!-- Modal para mostrar el QR -->
-    <div class="modal fade" id="qrModal" tabindex="-1" aria-hidden="true">
+    <!-- Modal para editar el RUT -->
+    <div class="modal fade" id="editarRutModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title"><i class="fas fa-qrcode me-2"></i>Código QR</h5>
+                    <h5 class="modal-title"><i class="fas fa-edit me-2"></i>Editar RUT</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body text-center">
-                    <img id="qrImage" src="" alt="QR Code" class="img-fluid mb-3" style="max-width: 250px;">
-                    <div class="d-grid gap-2">
-                        <a id="downloadQR" href="#" class="btn btn-dark" download>
-                            <i class="fas fa-download me-1"></i> Descargar QR
-                        </a>
-                    </div>
+                <div class="modal-body">
+                    <form id="editarRutForm" action="../php/editarqr_persona.php" method="POST">
+                        <input type="hidden" id="personaId" name="personaId">
+                        <div class="mb-3">
+                            <label for="nuevoRut" class="form-label">Nuevo RUT</label>
+                            <input type="text" class="form-control" id="nuevoRut" name="nuevoRut" required>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">Actualizar RUT</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-1"></i> Cerrar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal para editar el QR -->
+    <div class="modal fade" id="editarQRModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-edit me-2"></i>Editar Código QR</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editarQRForm" action="../php/editarqr_persona.php" method="POST" enctype="multipart/form-data">
+                        <input type="hidden" id="personaId" name="personaId">
+                        <div class="mb-3">
+                            <label for="nuevoQR" class="form-label">Seleccionar nuevo QR</label>
+                            <input type="file" class="form-control" id="nuevoQR" name="nuevoQR" accept="image/*" required>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">Subir Nuevo QR</button>
+                        </div>
+                    </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">
@@ -174,6 +225,17 @@
                 // Redirigir a la URL de eliminación pasando el ID de la persona
                 window.location.href = '../php/eliminarqr_persona?id_persona=' + personaId;
             }
+        }
+    </script>
+    <script>
+        function editarRut(personaId, rutActual) {
+            // Asignar el ID de la persona y el RUT actual al formulario
+            document.getElementById('personaId').value = personaId;
+            document.getElementById('nuevoRut').value = rutActual;
+
+            // Mostrar el modal
+            var editarRutModal = new bootstrap.Modal(document.getElementById('editarRutModal'));
+            editarRutModal.show();
         }
     </script>
 </body>
