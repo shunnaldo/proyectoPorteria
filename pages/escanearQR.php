@@ -114,6 +114,72 @@ $stmt->close();
             </div>
         </main>
 
+    <div class="manual-entry mt-4 text-center">
+    <style>
+        .manual-entry {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .manual-entry p {
+            color: #495057;
+            font-weight: 500;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+        .manual-entry .form-control {
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            padding: 0.5rem 1rem;
+            min-width: 250px;
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
+        }
+        .manual-entry .btn-primary {
+            background-color: #343a40;
+            border: none;
+            border-radius: 6px;
+            padding: 0.5rem 1.25rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        .manual-entry .btn-primary:hover {
+            background-color: #23272b;
+            transform: translateY(-1px);
+        }
+        .manual-entry form {
+            align-items: center;
+        }
+        @media (max-width: 576px) {
+            .manual-entry form {
+                flex-direction: column;
+                gap: 0.75rem !important;
+            }
+            .manual-entry .form-control {
+                min-width: 100%;
+            }
+            .manual-entry .btn-primary {
+                width: 100%;
+            }
+        }
+    </style>
+
+    <p>¿No puedes escanear el carnet?</p>
+    <form action="../php/procesarQR.php" method="POST" class="d-flex justify-content-center gap-2">
+        <input type="text" name="rut_manual" placeholder="Ej: 123456789" maxlength="9"
+               pattern="[0-9]{7,8}[0-9kK]{1}" required class="form-control w-auto"
+               title="Ingrese RUT sin puntos ni guión (8 dígitos + 1 dígito verificador)">
+        <input type="hidden" name="porton_id" value="<?= $porton_id ?>">
+        <input type="hidden" name="usuario_id" value="<?= $usuario_id ?>">
+        <button type="submit" class="btn btn-primary">
+            <i class="fas fa-check-circle me-1"></i> Validar
+        </button>
+    </form>
+</div>
+
         <footer class="scanner-footer">
             <button id="toggleCamera" class="btn-secondary">Cambiar cámara</button>
             <button id="cancelScan" class="btn-primary">Cancelar</button>
